@@ -91,7 +91,7 @@ export default function Aula() {
 
   let view;
   if (status === 'error') view = <StateNote eyebrow="Storage unavailable" title="Aula can't reach its records" body="Aula keeps your semester in this browser's IndexedDB, which isn't available here. Private windows in some browsers turn it off." />;
-  else if (status === 'loading') view = <StateNote eyebrow={cal.name} title="Opening your semester" body="Your four courses, their weekly modules and assignments, and every document and artifact filed under them will appear here." skeleton />;
+  else if (status === 'loading') view = <StateNote eyebrow={cal.name} title="Opening your semester" body="Your courses, their weekly modules and assignments, and every document and artifact filed under them will appear here." skeleton />;
   else if (!sorted.courses.length) view = <StateNote eyebrow="No term yet" title="No courses filed" body="Aula is empty. Restore a backup from the rail, or add public/aula-data.json and clear this site's data to import it again." />;
   else if (route.view === 'course' && idx.course(route.id)) view = <CourseView course={idx.course(route.id)} />;
   else if (route.view === 'library') view = <LibraryView />;

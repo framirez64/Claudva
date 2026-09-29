@@ -114,7 +114,7 @@ function useSaveField(coll, rec) {
   };
 }
 
-function Confirm({ label, question, onConfirm }) {
+export function Confirm({ label, question, onConfirm }) {
   const [asking, setAsking] = useState(false);
   return (
     <section className="dr-sec danger">

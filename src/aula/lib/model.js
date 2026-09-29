@@ -33,6 +33,24 @@ export function makeIndex(data) {
   };
 }
 
+// Removing a course deletes its modules and assignments. Its documents are kept, codes unchanged:
+// a shared one moves to the next course it's filed in, the rest become unfiled.
+export function courseRemoval(data, cid) {
+  const documents = [];
+  for (const d of data.documents) {
+    const also = Array.isArray(d.alsoIn) ? d.alsoIn : [];
+    const rest = also.filter(x => x !== cid);
+    if (d.courseId === cid) documents.push({ id: d.id, patch: { courseId: rest[0] || null, alsoIn: rest.slice(1) } });
+    else if (rest.length !== also.length) documents.push({ id: d.id, patch: { alsoIn: rest } });
+  }
+  return {
+    modules: data.modules.filter(m => m.courseId === cid).map(m => m.id),
+    assignments: data.assignments.filter(a => a.courseId === cid).map(a => a.id),
+    documents,
+    homed: documents.filter(d => 'courseId' in d.patch).length,
+  };
+}
+
 export function progress(course, assignments) {
   const as = assignments.filter(a => a.courseId === course.id && a.cadence !== 'weekly');
   if (course.grading === 'completion') {

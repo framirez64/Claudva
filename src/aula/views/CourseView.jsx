@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useAula } from '../context.js';
 import { AsgRow, DocRow, Glyph, Rel } from '../components/Rows.jsx';
+import { Confirm } from '../drawers/Drawer.jsx';
 import { fmt, wkLabel } from '../lib/dates.js';
-import { A_STATUS, DONE, LINKED, asgFill, byCode, byDue, colorOf, dueText, progress, safeUrl, stamp, titleFromFile, weightText } from '../lib/model.js';
+import { A_STATUS, DONE, LINKED, asgFill, byCode, byDue, colorOf, courseRemoval, dueText, progress, safeUrl, stamp, titleFromFile, weightText } from '../lib/model.js';
 import * as store from '../lib/store.js';
 
 export default function CourseView({ course: c }) {
@@ -41,8 +42,27 @@ export default function CourseView({ course: c }) {
       <div className="tabpanel" role="tabpanel" aria-labelledby={'tab-' + current}>
         {current === 'assignments' ? <AssignmentsTab c={c} /> : current === 'documents' ? <DocumentsTab c={c} /> : <ModulesTab c={c} />}
       </div>
+      <RemoveCourse key={c.id} c={c} />
     </>
   );
+}
+
+function RemoveCourse({ c }) {
+  const { data, save, go } = useAula();
+  const plan = courseRemoval(data, c.id);
+  const n = (k, one, many) => k + ' ' + (k === 1 ? one : many);
+  const question = `Remove ${c.code} from Aula for good? Its ${n(plan.modules.length, 'module', 'modules')} and ${n(plan.assignments.length, 'assignment', 'assignments')} are deleted.` +
+    (plan.homed ? ` Its ${n(plan.homed, 'document stays', 'documents stay')} in the Library.` : '');
+  async function removeCourse() {
+    const ok = await save(async () => {
+      for (const d of plan.documents) await store.update('documents', d.id, { ...d.patch, updatedAt: stamp() });
+      for (const id of plan.assignments) await store.remove('assignments', id);
+      for (const id of plan.modules) await store.remove('modules', id);
+      await store.remove('courses', c.id);
+    }, 'Removed ' + c.code);
+    if (ok) go({ view: 'semester' });
+  }
+  return <div className="course-foot"><Confirm label="Remove course" question={question} onConfirm={removeCourse} /></div>;
 }
 
 function ModulesTab({ c }) {

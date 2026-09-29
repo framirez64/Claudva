@@ -40,7 +40,7 @@ Aula keeps Canvas's information architecture and drops everything that assumes o
 **Goals**
 
 - Every document is reachable from its course, its week and its assignment in two clicks or fewer.
-- This week, across all four courses, fits on one screen.
+- This week, across all courses, fits on one screen.
 - Every reading shows where it stands: page, status, notes.
 - Every assignment records what you shipped for it: repo, report, recording or file.
 
@@ -69,7 +69,7 @@ The shell hangs everything from a left axis, following Tschichold's case for asy
 
 | View | Question it answers | What it shows |
 | --- | --- | --- |
-| Semester | What is happening across all courses this week? | Current week, the 12-week ruler of due dates, four course plates, This Week column |
+| Semester | What is happening across all courses this week? | Current week, the 12-week ruler of due dates, one plate per course, This Week column |
 | Course · Modules | What belongs to each week? | Week sections with assignment and document rows; light and open weeks marked |
 | Course · Assignments | What is due, and what is done? | Rows by due date, weight, inline status |
 | Course · Documents | What is filed here? | Readings and data, then artifacts and repositories |
@@ -102,7 +102,7 @@ Aula is set like a specimen catalogue: hairline rules, flush-left type, hard edg
 | caracol | `#6E3F5C` | AI 410 Inference Systems |
 | sky | `#3D7FA8` | AI 420 Evaluation Methods |
 | brick | `#C9492E` | AI 430 Product Studio |
-| ochre | `#E2A52B` | BUS 290 Consulting Practicum |
+| ochre | `#E2A52B` | Unassigned since BUS 290 was dropped |
 
 **Glyphs.** Bauhaus primitives drawn in ink: a square for a document, a triangle for an assignment, a circle for a repo or artifact. Fill carries status: hollow not started, half in progress, solid done, a center dot for reference.
 
@@ -131,6 +131,8 @@ On first run the app imports `public/aula-data.json`, the semester exported from
 
 The term runs 2026-09-28 to 2026-12-18 in 12 weeks starting Mondays; week 9 (Nov 23–29, Thanksgiving) is a light week with nothing due. Assignments are due Sundays, and finals on Friday 2026-12-18. The full records are in `public/aula-data.json`.
 
+BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical courses; each course page ends with a Remove course action. The seed still contains BUS 290, so a fresh import brings it back.
+
 ## Build plan
 
 1. **Port.** Done: every v1 view runs in React on IndexedDB. Check: `npm run dev`, then every document is two clicks or fewer from its course, week and assignment.
@@ -145,10 +147,10 @@ The term runs 2026-09-28 to 2026-12-18 in 12 weeks starting Mondays; week 9 (Nov
 | Name | Aula | Open |
 | Stack | React and Vite | Decided |
 | File storage | Blobs in IndexedDB for now; managed folders when the backend lands | Open |
-| Course colors | 410 caracol, 420 sky, 430 brick, 290 ochre | Open |
+| Course colors | 410 caracol, 420 sky, 430 brick; ochre unassigned | Open |
 | Glyph color | Ink only | Open |
 | Progress | Self-assessed, weighted scores | Open |
-| Practicum grading | Completion, no weights | Open |
+| Practicum grading | Completion, no weights | Dropped with BUS 290 |
 | Due day | Sundays; finals Friday, December 18 | Open |
 | Phone layout | Full editing, desktop-first layout | Open |
 

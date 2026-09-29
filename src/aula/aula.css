@@ -179,6 +179,9 @@ select.compact{width:auto;padding:5px 6px;font-size:13px;background:var(--bg)}
 .tab:hover{color:var(--fg)}
 .tab[aria-selected=true]{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
 .tabpanel{padding-top:8px}
+.course-foot{margin-top:40px}
+.course-foot .danger{align-items:flex-start;border-top:0;padding-top:0}
+.course-foot .confirm{max-width:62ch}
 
 .modules{list-style:none;margin:0;padding:0}
 .module{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;padding:24px 0;border-bottom:1px solid var(--rule)}
