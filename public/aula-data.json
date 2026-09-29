@@ -1,0 +1,732 @@
+{
+  "app": "aula",
+  "schema": 1,
+  "exportedAt": "2026-09-28T19:10:00-05:00",
+  "source": "https://claude.ai/artifact/W6XjoM7FUfxwuz7gSXwSL9",
+  "term": [
+    {
+      "id": "fall-2026",
+      "end": "2026-12-18",
+      "lightLabel": "Thanksgiving",
+      "lightWeek": 9,
+      "name": "Fall 2026",
+      "start": "2026-09-28",
+      "weeks": 12
+    }
+  ],
+  "courses": [
+    {
+      "id": "ai-410",
+      "code": "AI 410",
+      "color": "caracol",
+      "final": "Inference engine repo and benchmark write-up",
+      "grading": "weighted",
+      "hours": 6,
+      "number": "410",
+      "order": 1,
+      "summary": "Build a small inference engine on the forward pass from Raschka, profile it, then write Triton kernels for the hot paths.",
+      "tagline": "Below the abstraction layer",
+      "title": "Inference Systems"
+    },
+    {
+      "id": "ai-420",
+      "code": "AI 420",
+      "color": "sky",
+      "final": "Technical report and community post",
+      "grading": "weighted",
+      "hours": 4,
+      "number": "420",
+      "order": 2,
+      "summary": "Measure how much extraction quality a 3–4-bit 8B model loses on Tagger documents, and how much scaffolding or a QLoRA adapter wins back.",
+      "tagline": "Quantization and recovery",
+      "title": "Evaluation Methods"
+    },
+    {
+      "id": "ai-430",
+      "code": "AI 430",
+      "color": "brick",
+      "final": "Two-minute demo recording and public repo",
+      "grading": "weighted",
+      "hours": 5,
+      "number": "430",
+      "order": 3,
+      "summary": "Ship Tagger as a polished, demoable product, backed by a written engineering rationale and a comprehension audit.",
+      "tagline": "Shipping Tagger",
+      "title": "Product Studio"
+    },
+    {
+      "id": "bus-290",
+      "code": "BUS 290",
+      "color": "ochre",
+      "final": "A signed engagement, or three documented pitches",
+      "grading": "completion",
+      "hours": 2,
+      "number": "290",
+      "order": 4,
+      "summary": "Work the MCL referrals and one MH Hospitality opportunity through to a proposal and a pitch, logging one outreach contact a week.",
+      "tagline": "Referrals, proposals, pitches",
+      "title": "Consulting Practicum"
+    }
+  ],
+  "modules": [
+    {
+      "id": "ai-410-m1",
+      "courseId": "ai-410",
+      "summary": "Build the GPT forward pass from Raschka. Work out the 3090's decoding ceiling and measure how close llama.cpp gets.",
+      "title": "Model internals",
+      "weekEnd": 3,
+      "weekStart": 1
+    },
+    {
+      "id": "ai-410-m2",
+      "courseId": "ai-410",
+      "summary": "Add a KV cache and batched generation to your model. Read the PagedAttention paper.",
+      "title": "KV cache and batching",
+      "weekEnd": 5,
+      "weekStart": 4
+    },
+    {
+      "id": "ai-410-m3",
+      "courseId": "ai-410",
+      "summary": "Profile your engine with torch.profiler, Nsight Systems and Nsight Compute. Write up where the time goes.",
+      "title": "Profiling",
+      "weekEnd": 6,
+      "weekStart": 6
+    },
+    {
+      "id": "ai-410-m4",
+      "courseId": "ai-410",
+      "summary": "Write RMSNorm and softmax kernels in Triton and benchmark them against PyTorch.",
+      "title": "Triton I",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "ai-410-m5",
+      "courseId": "ai-410",
+      "summary": "A 4-bit dequantize and matrix-vector kernel, the operation that dominates decoding. Week 9 is light.",
+      "title": "Triton II",
+      "weekEnd": 10,
+      "weekStart": 9
+    },
+    {
+      "id": "ai-410-m6",
+      "courseId": "ai-410",
+      "summary": "Add a paged KV cache and compare your design with nano-vllm.",
+      "title": "Paged KV cache",
+      "weekEnd": 11,
+      "weekStart": 11
+    },
+    {
+      "id": "ai-410-m7",
+      "courseId": "ai-410",
+      "summary": "Ship the engine repo with a write-up benchmarking it against llama.cpp.",
+      "title": "Final",
+      "weekEnd": 12,
+      "weekStart": 12
+    },
+    {
+      "id": "ai-420-m1",
+      "courseId": "ai-420",
+      "summary": "Build a gold-labeled extraction set of 100–200 documents from Tagger and define your metrics.",
+      "title": "Evaluation design",
+      "weekEnd": 2,
+      "weekStart": 1
+    },
+    {
+      "id": "ai-420-m2",
+      "courseId": "ai-420",
+      "summary": "Run BF16, Q8, Q6, Q4 and Q3 on the 3090, recording quality and tokens per second. Release the tool.",
+      "title": "Quantization sweep",
+      "weekEnd": 5,
+      "weekStart": 3
+    },
+    {
+      "id": "ai-420-m3",
+      "courseId": "ai-420",
+      "summary": "Add few-shot prompting, self-consistency and verify-and-retry, then a QLoRA adapter on the quantized base.",
+      "title": "Recovery methods",
+      "weekEnd": 8,
+      "weekStart": 6
+    },
+    {
+      "id": "ai-420-m4",
+      "courseId": "ai-420",
+      "summary": "One rented-GPU session testing MXFP4, the 4-bit format the 3090 cannot run.",
+      "title": "MXFP4",
+      "weekEnd": 10,
+      "weekStart": 10
+    },
+    {
+      "id": "ai-420-m5",
+      "courseId": "ai-420",
+      "summary": "Write the technical report, then post it to r/LocalLLaMA and Hacker News.",
+      "title": "Report",
+      "weekEnd": 12,
+      "weekStart": 11
+    },
+    {
+      "id": "ai-430-m1",
+      "courseId": "ai-430",
+      "summary": "Text-layer extraction for native PDFs and Word files, and the Qwen3-VL-8B path for designed PDFs.",
+      "title": "Text and visual paths",
+      "weekEnd": 3,
+      "weekStart": 1
+    },
+    {
+      "id": "ai-430-m2",
+      "courseId": "ai-430",
+      "summary": "Exact and semantic search, the routing heuristic, and the thin FastAPI layer.",
+      "title": "Search and API",
+      "weekEnd": 6,
+      "weekStart": 4
+    },
+    {
+      "id": "ai-430-m3",
+      "courseId": "ai-430",
+      "summary": "A UI pass in the Swiss/Bauhaus vocabulary. The part of the project that keeps it interesting.",
+      "title": "Design review",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "ai-430-m4",
+      "courseId": "ai-430",
+      "summary": "Write the engineering rationale, then delete one component and rebuild it yourself.",
+      "title": "Documentation",
+      "weekEnd": 11,
+      "weekStart": 10
+    },
+    {
+      "id": "ai-430-m5",
+      "courseId": "ai-430",
+      "summary": "A two-minute screen recording and a public repository.",
+      "title": "Demo day",
+      "weekEnd": 12,
+      "weekStart": 12
+    },
+    {
+      "id": "bus-290-m1",
+      "courseId": "bus-290",
+      "summary": "Research the three MCL referrals, starting with NEbisco, then make contact.",
+      "title": "Referrals",
+      "weekEnd": 4,
+      "weekStart": 1
+    },
+    {
+      "id": "bus-290-m2",
+      "courseId": "bus-290",
+      "summary": "Turn one MH Hospitality automation opportunity into a written proposal.",
+      "title": "Proposal",
+      "weekEnd": 6,
+      "weekStart": 5
+    },
+    {
+      "id": "bus-290-m3",
+      "courseId": "bus-290",
+      "summary": "Pitch the proposal, using Tagger as the live demo.",
+      "title": "Pitch",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "bus-290-m4",
+      "courseId": "bus-290",
+      "summary": "A signed engagement, or three documented pitches with what each one taught you.",
+      "title": "Final",
+      "weekEnd": 12,
+      "weekStart": 12
+    }
+  ],
+  "assignments": [
+    {
+      "id": "a290-1",
+      "courseId": "bus-290",
+      "due": "2026-10-25",
+      "moduleId": "bus-290-m1",
+      "status": "Not started",
+      "title": "Research and contact the three MCL referrals"
+    },
+    {
+      "id": "a290-2",
+      "courseId": "bus-290",
+      "due": "2026-11-08",
+      "moduleId": "bus-290-m2",
+      "status": "Not started",
+      "title": "MH Hospitality automation proposal"
+    },
+    {
+      "id": "a290-3",
+      "courseId": "bus-290",
+      "due": "2026-11-22",
+      "moduleId": "bus-290-m3",
+      "status": "Not started",
+      "title": "Pitch, with Tagger as the live demo"
+    },
+    {
+      "id": "a290-4",
+      "cadence": "weekly",
+      "courseId": "bus-290",
+      "log": [],
+      "moduleId": "bus-290-m1",
+      "status": "In progress",
+      "target": 12,
+      "title": "Outreach log: one contact a week"
+    },
+    {
+      "id": "a290-5",
+      "courseId": "bus-290",
+      "due": "2026-12-18",
+      "moduleId": "bus-290-m4",
+      "status": "Not started",
+      "title": "Final: signed engagement, or three documented pitches"
+    },
+    {
+      "id": "a410-1",
+      "courseId": "ai-410",
+      "due": "2026-10-11",
+      "moduleId": "ai-410-m1",
+      "status": "Not started",
+      "title": "Lab 1: 3090 roofline vs. llama.cpp",
+      "weight": 8
+    },
+    {
+      "id": "a410-2",
+      "courseId": "ai-410",
+      "due": "2026-10-18",
+      "moduleId": "ai-410-m1",
+      "status": "Not started",
+      "title": "Lab 2: GPT forward pass from Raschka",
+      "weight": 8
+    },
+    {
+      "id": "a410-3",
+      "courseId": "ai-410",
+      "due": "2026-11-01",
+      "moduleId": "ai-410-m2",
+      "status": "Not started",
+      "title": "Lab 3: KV cache and batched generation",
+      "weight": 8
+    },
+    {
+      "id": "a410-4",
+      "courseId": "ai-410",
+      "due": "2026-11-08",
+      "moduleId": "ai-410-m3",
+      "status": "Not started",
+      "title": "Midterm: profiling report on your engine",
+      "weight": 20
+    },
+    {
+      "id": "a410-5",
+      "courseId": "ai-410",
+      "due": "2026-11-22",
+      "moduleId": "ai-410-m4",
+      "status": "Not started",
+      "title": "Lab 4: RMSNorm and softmax kernels",
+      "weight": 8
+    },
+    {
+      "id": "a410-6",
+      "courseId": "ai-410",
+      "due": "2026-12-06",
+      "moduleId": "ai-410-m5",
+      "status": "Not started",
+      "title": "Lab 5: 4-bit dequant GEMV kernel",
+      "weight": 8
+    },
+    {
+      "id": "a410-7",
+      "courseId": "ai-410",
+      "due": "2026-12-18",
+      "moduleId": "ai-410-m7",
+      "status": "Not started",
+      "title": "Final: inference engine repo and benchmark write-up",
+      "weight": 40
+    },
+    {
+      "id": "a420-1",
+      "courseId": "ai-420",
+      "due": "2026-10-11",
+      "moduleId": "ai-420-m1",
+      "status": "Not started",
+      "title": "Eval design memo and gold set",
+      "weight": 20
+    },
+    {
+      "id": "a420-2",
+      "courseId": "ai-420",
+      "due": "2026-11-01",
+      "moduleId": "ai-420-m2",
+      "status": "Not started",
+      "title": "Benchmark tool v0.1 released on GitHub",
+      "weight": 25
+    },
+    {
+      "id": "a420-3",
+      "courseId": "ai-420",
+      "due": "2026-11-22",
+      "moduleId": "ai-420-m3",
+      "status": "Not started",
+      "title": "Results table checkpoint",
+      "weight": 0
+    },
+    {
+      "id": "a420-4",
+      "courseId": "ai-420",
+      "due": "2026-12-13",
+      "moduleId": "ai-420-m5",
+      "status": "Not started",
+      "title": "Technical report",
+      "weight": 40
+    },
+    {
+      "id": "a420-5",
+      "courseId": "ai-420",
+      "due": "2026-12-18",
+      "moduleId": "ai-420-m5",
+      "status": "Not started",
+      "title": "Community post: r/LocalLLaMA and Hacker News",
+      "weight": 15
+    },
+    {
+      "id": "a430-1",
+      "courseId": "ai-430",
+      "due": "2026-10-18",
+      "moduleId": "ai-430-m1",
+      "status": "Not started",
+      "title": "Milestone 1: both extraction paths working",
+      "weight": 20
+    },
+    {
+      "id": "a430-2",
+      "courseId": "ai-430",
+      "due": "2026-11-08",
+      "moduleId": "ai-430-m2",
+      "status": "Not started",
+      "title": "Milestone 2: search and the FastAPI layer",
+      "weight": 20
+    },
+    {
+      "id": "a430-3",
+      "courseId": "ai-430",
+      "due": "2026-11-22",
+      "moduleId": "ai-430-m3",
+      "status": "Not started",
+      "title": "UI design pass",
+      "weight": 15
+    },
+    {
+      "id": "a430-4",
+      "courseId": "ai-430",
+      "due": "2026-12-13",
+      "moduleId": "ai-430-m4",
+      "status": "Not started",
+      "title": "Rationale doc and comprehension audit",
+      "weight": 20
+    },
+    {
+      "id": "a430-5",
+      "courseId": "ai-430",
+      "due": "2026-12-18",
+      "moduleId": "ai-430-m5",
+      "status": "Not started",
+      "title": "Demo: two-minute recording and public repo",
+      "weight": 25
+    }
+  ],
+  "documents": [
+    {
+      "id": "d410-a-001",
+      "author": "Horace He",
+      "code": "410-A-001",
+      "courseId": "ai-410",
+      "kind": "Article",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Making Deep Learning Go Brrrr From First Principles",
+      "url": "https://horace.io/brrr_intro.html",
+      "weekEnd": 1,
+      "weekStart": 1
+    },
+    {
+      "id": "d410-a-002",
+      "author": "Simon Boehm",
+      "code": "410-A-002",
+      "courseId": "ai-410",
+      "kind": "Article",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance",
+      "url": "https://siboehm.com/articles/22/CUDA-MMM",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "d410-b-001",
+      "author": "Sebastian Raschka",
+      "code": "410-B-001",
+      "courseId": "ai-410",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Build a Large Language Model (From Scratch)",
+      "url": "",
+      "weekEnd": 3,
+      "weekStart": 1
+    },
+    {
+      "id": "d410-b-002",
+      "author": "Hwu, Kirk and El Hajj",
+      "code": "410-B-002",
+      "courseId": "ai-410",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Reference",
+      "status": "Reference",
+      "title": "Programming Massively Parallel Processors",
+      "url": "",
+      "weekEnd": 10,
+      "weekStart": 7
+    },
+    {
+      "id": "d410-p-001",
+      "author": "Kwon et al., 2023",
+      "code": "410-P-001",
+      "courseId": "ai-410",
+      "kind": "Paper",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "weekEnd": 5,
+      "weekStart": 4
+    },
+    {
+      "id": "d410-p-002",
+      "author": "Dao et al., 2022",
+      "code": "410-P-002",
+      "courseId": "ai-410",
+      "kind": "Paper",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Optional",
+      "status": "Queued",
+      "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+      "url": "https://arxiv.org/abs/2205.14135",
+      "weekEnd": 5,
+      "weekStart": 4
+    },
+    {
+      "id": "d410-r-001",
+      "author": "GeeeekExplorer",
+      "code": "410-R-001",
+      "courseId": "ai-410",
+      "kind": "Repo",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Reference",
+      "status": "Reference",
+      "title": "nano-vllm",
+      "url": "https://github.com/GeeeekExplorer/nano-vllm",
+      "weekEnd": 11,
+      "weekStart": 11
+    },
+    {
+      "id": "d420-b-001",
+      "author": "Paul Iusztin and Maxime Labonne",
+      "code": "420-B-001",
+      "courseId": "ai-420",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "LLM Engineer's Handbook",
+      "url": "",
+      "weekEnd": 2,
+      "weekStart": 1
+    },
+    {
+      "id": "d420-b-002",
+      "author": "Sebastian Raschka",
+      "code": "420-B-002",
+      "courseId": "ai-420",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Build a Reasoning Model (From Scratch)",
+      "url": "",
+      "weekEnd": 8,
+      "weekStart": 6
+    },
+    {
+      "id": "d420-d-001",
+      "alsoIn": [
+        "ai-430"
+      ],
+      "author": "You build it: 100–200 labeled documents",
+      "code": "420-D-001",
+      "courseId": "ai-420",
+      "kind": "Dataset",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Tagger extraction gold set",
+      "url": "",
+      "weekEnd": 2,
+      "weekStart": 1
+    },
+    {
+      "id": "d420-p-001",
+      "author": "Liang et al., 2022",
+      "code": "420-P-001",
+      "courseId": "ai-420",
+      "kind": "Paper",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Holistic Evaluation of Language Models (HELM)",
+      "url": "https://arxiv.org/abs/2211.09110",
+      "weekEnd": 2,
+      "weekStart": 1
+    },
+    {
+      "id": "d420-p-002",
+      "author": "Dettmers et al., 2023",
+      "code": "420-P-002",
+      "courseId": "ai-420",
+      "kind": "Paper",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+      "url": "https://arxiv.org/abs/2305.14314",
+      "weekEnd": 8,
+      "weekStart": 6
+    },
+    {
+      "id": "d430-b-001",
+      "author": "Jay Alammar and Maarten Grootendorst",
+      "code": "430-B-001",
+      "courseId": "ai-430",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Hands-On Large Language Models",
+      "url": "",
+      "weekEnd": 6,
+      "weekStart": 4
+    },
+    {
+      "id": "d430-b-002",
+      "author": "Timothy Samara",
+      "code": "430-B-002",
+      "courseId": "ai-430",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Reference",
+      "status": "Reference",
+      "title": "Making and Breaking the Grid",
+      "url": "",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "d430-b-003",
+      "author": "Adam Wathan and Steve Schoger",
+      "code": "430-B-003",
+      "courseId": "ai-430",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Reference",
+      "status": "Reference",
+      "title": "Refactoring UI",
+      "url": "",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "d430-r-001",
+      "author": "Your repository; add its link once it is public",
+      "code": "430-R-001",
+      "courseId": "ai-430",
+      "kind": "Repo",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Reference",
+      "title": "Tagger",
+      "url": "",
+      "weekEnd": 12,
+      "weekStart": 1
+    },
+    {
+      "id": "dgen-c-001",
+      "author": "Claude Docs",
+      "code": "GEN-C-001",
+      "courseId": null,
+      "kind": "Artifact",
+      "log": [],
+      "notes": "The spec this app is built from. Open decisions are listed at the end.",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Reference",
+      "status": "Reference",
+      "title": "Aula — Design Document",
+      "url": "https://claude.ai/code/artifact/6be0da2c-ca24-4429-a134-54fae8616aaf",
+      "weekEnd": null,
+      "weekStart": null
+    }
+  ]
+}
