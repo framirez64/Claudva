@@ -91,7 +91,7 @@ Every document gets an accession code, a home course and a reading log, so its p
 
 Aula is set like a specimen catalogue: hairline rules, flush-left type, hard edges, and color used only to say which course.
 
-**Type.** Jost for display and headings, Inter for body and interface text, IBM Plex Mono for accession codes, dates and every number.
+**Type.** Poiret One (Regular only, bundled from `src/aula/fonts/Poiret_One`) for display and headings, Inter for body and interface text, IBM Plex Mono for accession codes, dates and every number.
 
 **Tokens.**
 
@@ -106,7 +106,7 @@ Aula is set like a specimen catalogue: hairline rules, flush-left type, hard edg
 
 **Glyphs.** Bauhaus primitives drawn in ink: a square for a document, a triangle for an assignment, a circle for a repo or artifact. Fill carries status: hollow not started, half in progress, solid done, a center dot for reference.
 
-**Course plates.** The course number large in Jost, an 8 px band of the course color on the left edge, then the current module, the next due item and the shelf count. The one diagonal accent on any screen is the current-week marker.
+**Course plates.** The course number large in Poiret One, an 8 px band of the course color on the left edge, then the current module, the next due item and the shelf count. The one diagonal accent on any screen is the current-week marker.
 
 **Never:** rounded corners, drop shadows, gradients, centered page layouts, Tailwind's default palette, emoji, course colors used as decoration.
 

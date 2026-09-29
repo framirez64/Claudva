@@ -1,4 +1,6 @@
 /* Layout: a left rail of navigation hung beside one flush-left working column; nothing is centered, edges are hard, color only names a course. */
+/* Poiret One ships a single Regular weight, so every display rule below is set at 400 to avoid synthesized bold. */
+@font-face{font-family:"Poiret One";src:url("./fonts/Poiret_One/PoiretOne-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
 :root{
   --bg:#EFE6D4;          /* paper */
   --surface:#F5EFE3;
@@ -9,7 +11,7 @@
   --rule-2:rgba(30,28,25,.42);
   --scrim:rgba(30,28,25,.34);
   --caracol:#6E3F5C; --sky:#3D7FA8; --brick:#C9492E; --ochre:#E2A52B;
-  --f-display:"Jost","Futura","Century Gothic","Avenir Next",system-ui,sans-serif;
+  --f-display:"Poiret One","Futura","Century Gothic","Avenir Next",system-ui,sans-serif;
   --f-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --t-1:12px; --t-2:14px; --t-3:18px; --t-4:28px; --t-5:44px;
@@ -48,7 +50,7 @@ p{margin:0}
 .rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;overflow:auto;
   border-right:1px solid var(--rule);padding:28px 20px 32px;display:flex;flex-direction:column;gap:22px}
 .brand{display:flex;flex-direction:column;gap:6px}
-.wordmark{font:700 34px/0.9 var(--f-display);letter-spacing:-.02em}
+.wordmark{font:400 34px/0.9 var(--f-display);letter-spacing:-.02em}
 .brand-sub{font-size:var(--t-1);color:var(--muted)}
 .nav-group{display:flex;flex-direction:column;gap:2px}
 .nav-item{display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;background:none;border:0;
@@ -63,9 +65,9 @@ p{margin:0}
 
 /* ---------- common type ---------- */
 .eyebrow{font:500 var(--t-1)/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.display{font:600 var(--t-5)/1 var(--f-display);letter-spacing:-.015em}
-.h1{font:600 var(--t-4)/1.15 var(--f-display);letter-spacing:-.01em}
-.h3{font:600 var(--t-3)/1.3 var(--f-display)}
+.display{font:400 var(--t-5)/1 var(--f-display);letter-spacing:-.015em}
+.h1{font:400 var(--t-4)/1.15 var(--f-display);letter-spacing:-.01em}
+.h3{font:400 var(--t-3)/1.3 var(--f-display)}
 .lede{color:var(--muted);max-width:62ch}
 .slant{display:inline-block;background:var(--fg);color:var(--bg);font:500 11px/1 var(--f-mono);letter-spacing:.12em;
   text-transform:uppercase;padding:5px 16px;clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
@@ -138,9 +140,9 @@ select.compact{width:auto;padding:5px 6px;font-size:13px;background:var(--bg)}
 .plate:hover{background:var(--surface)}
 .plate:hover .plate-title{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 .plate-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.plate-num{font:700 var(--t-5)/.85 var(--f-display);letter-spacing:-.02em}
+.plate-num{font:400 var(--t-5)/.85 var(--f-display);letter-spacing:-.02em}
 .plate-code{font:500 var(--t-1)/1.3 var(--f-mono);color:var(--muted);text-align:right}
-.plate-title{font:600 20px/1.2 var(--f-display);display:block}
+.plate-title{font:400 20px/1.2 var(--f-display);display:block}
 .plate-tag{color:var(--muted);display:block;margin-top:2px}
 .kvs{display:flex;flex-direction:column;border-top:1px solid var(--rule)}
 .kv{display:grid;grid-template-columns:78px minmax(0,1fr);gap:12px;padding:7px 0;border-bottom:1px solid var(--rule)}
@@ -150,7 +152,7 @@ select.compact{width:auto;padding:5px 6px;font-size:13px;background:var(--bg)}
 .plate-foot .muted{font-size:12.5px}
 
 .week{display:flex;flex-direction:column;gap:26px;min-width:0}
-.week-h{font:600 var(--t-3)/1.2 var(--f-display);padding-bottom:10px;border-bottom:2px solid var(--fg)}
+.week-h{font:400 var(--t-3)/1.2 var(--f-display);padding-bottom:10px;border-bottom:2px solid var(--fg)}
 .wk-sec{display:flex;flex-direction:column;gap:2px}
 .wk-sec .label{margin-bottom:6px}
 .mini{display:grid;grid-template-columns:10px 12px minmax(0,1fr);gap:10px;align-items:start;text-align:left;width:100%;
@@ -165,7 +167,7 @@ select.compact{width:auto;padding:5px 6px;font-size:13px;background:var(--bg)}
 /* ---------- course ---------- */
 .course-head{border-top:8px solid var(--c);padding-top:26px;display:flex;flex-direction:column;gap:18px;margin-bottom:8px}
 .course-id{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap}
-.course-num{font:700 clamp(64px,10vw,108px)/.78 var(--f-display);letter-spacing:-.035em}
+.course-num{font:400 clamp(64px,10vw,108px)/.78 var(--f-display);letter-spacing:-.035em}
 .course-names{display:flex;flex-direction:column;gap:6px;min-width:0;padding-bottom:2px}
 .course-summary{max-width:68ch}
 .course-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;border-top:1px solid var(--rule);padding-top:14px}
@@ -246,7 +248,7 @@ select.compact{width:auto;padding:5px 6px;font-size:13px;background:var(--bg)}
 .dr-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .dr-code{font:500 15px/1 var(--f-mono);letter-spacing:.02em}
 .dr-title{width:100%;border:0;border-bottom:1px solid transparent;background:transparent;padding:2px 0;resize:none;
-  font:600 22px/1.25 var(--f-display);letter-spacing:-.005em;overflow:hidden}
+  font:400 22px/1.25 var(--f-display);letter-spacing:-.005em;overflow:hidden}
 .dr-title:hover{border-bottom-color:var(--rule-2)}
 .dr-title:focus{box-shadow:none;border-bottom-color:var(--fg)}
 .dr-body{flex:1;overflow:auto;padding:20px 24px calc(48px + env(safe-area-inset-bottom,0px)) 34px;display:flex;flex-direction:column;gap:28px}
