@@ -6,7 +6,7 @@ Exported from Claude Docs on Sep 28, 2026. The Technical architecture section, t
 
 Aula is a personal learning system: Canvas's structure, rebuilt for one student on one machine. It keeps courses, weekly modules, assignments and a calendar, and redraws them in a Swiss modernist register.
 
-Its core job is tying every document to the course, week and assignment it serves, so nothing studied this semester floats loose. It launches holding the Fall 2026 semester: four courses, 12 weeks, September 28 to December 18.
+Its core job is tying every document to the course, week and assignment it serves, so nothing studied this semester floats loose. It launches holding the Fall 2026 semester: three courses, 12 weeks, September 28 to December 18.
 
 ## Outline
 
@@ -131,7 +131,7 @@ On first run the app imports `public/aula-data.json`, the semester exported from
 
 The term runs 2026-09-28 to 2026-12-18 in 12 weeks starting Mondays; week 9 (Nov 23–29, Thanksgiving) is a light week with nothing due. Assignments are due Sundays, and finals on Friday 2026-12-18. The full records are in `public/aula-data.json`.
 
-BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical courses; each course page ends with a Remove course action. The seed still contains BUS 290, so a fresh import brings it back.
+BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical courses; each course page ends with a Remove course action. It was removed from the seed the same day, so a fresh import starts with three courses.
 
 ## Build plan
 

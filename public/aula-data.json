@@ -53,19 +53,6 @@
       "summary": "Ship Tagger as a polished, demoable product, backed by a written engineering rationale and a comprehension audit.",
       "tagline": "Shipping Tagger",
       "title": "Product Studio"
-    },
-    {
-      "id": "bus-290",
-      "code": "BUS 290",
-      "color": "ochre",
-      "final": "A signed engagement, or three documented pitches",
-      "grading": "completion",
-      "hours": 2,
-      "number": "290",
-      "order": 4,
-      "summary": "Work the MCL referrals and one MH Hospitality opportunity through to a proposal and a pitch, logging one outreach contact a week.",
-      "tagline": "Referrals, proposals, pitches",
-      "title": "Consulting Practicum"
     }
   ],
   "modules": [
@@ -204,83 +191,9 @@
       "title": "Demo day",
       "weekEnd": 12,
       "weekStart": 12
-    },
-    {
-      "id": "bus-290-m1",
-      "courseId": "bus-290",
-      "summary": "Research the three MCL referrals, starting with NEbisco, then make contact.",
-      "title": "Referrals",
-      "weekEnd": 4,
-      "weekStart": 1
-    },
-    {
-      "id": "bus-290-m2",
-      "courseId": "bus-290",
-      "summary": "Turn one MH Hospitality automation opportunity into a written proposal.",
-      "title": "Proposal",
-      "weekEnd": 6,
-      "weekStart": 5
-    },
-    {
-      "id": "bus-290-m3",
-      "courseId": "bus-290",
-      "summary": "Pitch the proposal, using Tagger as the live demo.",
-      "title": "Pitch",
-      "weekEnd": 8,
-      "weekStart": 7
-    },
-    {
-      "id": "bus-290-m4",
-      "courseId": "bus-290",
-      "summary": "A signed engagement, or three documented pitches with what each one taught you.",
-      "title": "Final",
-      "weekEnd": 12,
-      "weekStart": 12
     }
   ],
   "assignments": [
-    {
-      "id": "a290-1",
-      "courseId": "bus-290",
-      "due": "2026-10-25",
-      "moduleId": "bus-290-m1",
-      "status": "Not started",
-      "title": "Research and contact the three MCL referrals"
-    },
-    {
-      "id": "a290-2",
-      "courseId": "bus-290",
-      "due": "2026-11-08",
-      "moduleId": "bus-290-m2",
-      "status": "Not started",
-      "title": "MH Hospitality automation proposal"
-    },
-    {
-      "id": "a290-3",
-      "courseId": "bus-290",
-      "due": "2026-11-22",
-      "moduleId": "bus-290-m3",
-      "status": "Not started",
-      "title": "Pitch, with Tagger as the live demo"
-    },
-    {
-      "id": "a290-4",
-      "cadence": "weekly",
-      "courseId": "bus-290",
-      "log": [],
-      "moduleId": "bus-290-m1",
-      "status": "In progress",
-      "target": 12,
-      "title": "Outreach log: one contact a week"
-    },
-    {
-      "id": "a290-5",
-      "courseId": "bus-290",
-      "due": "2026-12-18",
-      "moduleId": "bus-290-m4",
-      "status": "Not started",
-      "title": "Final: signed engagement, or three documented pitches"
-    },
     {
       "id": "a410-1",
       "courseId": "ai-410",
