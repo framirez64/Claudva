@@ -1,7 +1,7 @@
 {
   "app": "aula",
   "schema": 1,
-  "exportedAt": "2026-09-28T19:10:00-05:00",
+  "exportedAt": "2026-10-05T23:30:36.348Z",
   "source": "https://claude.ai/artifact/W6XjoM7FUfxwuz7gSXwSL9",
   "term": [
     {
@@ -24,9 +24,9 @@
       "hours": 6,
       "number": "410",
       "order": 1,
-      "summary": "Build a small inference engine on the forward pass from Raschka, profile it, then write Triton kernels for the hot paths.",
-      "tagline": "Below the abstraction layer",
-      "title": "Inference Systems"
+      "summary": "Build a GPT-style model in PyTorch chapter by chapter with Raschka, then grow it into a small inference engine you profile and speed up with Triton kernels.",
+      "tagline": "Raschka, Build a Large Language Model (From Scratch)",
+      "title": "LLMs from Scratch"
     },
     {
       "id": "ai-420",
@@ -37,9 +37,9 @@
       "hours": 4,
       "number": "420",
       "order": 2,
-      "summary": "Measure how much extraction quality a 3–4-bit 8B model loses on Tagger documents, and how much scaffolding or a QLoRA adapter wins back.",
-      "tagline": "Quantization and recovery",
-      "title": "Evaluation Methods"
+      "summary": "Follow the handbook's production pipeline from data and RAG through fine-tuning, evaluation and deployment, and use it to measure how much extraction quality a 3–4-bit 8B model loses on Tagger documents, and what wins it back.",
+      "tagline": "Iusztin and Labonne, LLM Engineer's Handbook",
+      "title": "LLM Engineering"
     },
     {
       "id": "ai-430",
@@ -50,147 +50,213 @@
       "hours": 5,
       "number": "430",
       "order": 3,
-      "summary": "Ship Tagger as a polished, demoable product, backed by a written engineering rationale and a comprehension audit.",
-      "tagline": "Shipping Tagger",
-      "title": "Product Studio"
+      "summary": "Work through the book's practical tour of language models, from tokens and embeddings to search, multimodal models and fine-tuning, and use it to ship Tagger as a polished, demoable product.",
+      "tagline": "Alammar and Grootendorst, Hands-On Large Language Models",
+      "title": "Hands-On LLMs"
+    },
+    {
+      "id": "ai-440",
+      "code": "AI 440",
+      "color": "ochre",
+      "final": "One of your apps deployed, with evaluation and monitoring",
+      "grading": "weighted",
+      "hours": 3,
+      "number": "440",
+      "order": 4,
+      "summary": "Build LLM applications with LangChain one chapter at a time, from assistants and a retrieval chatbot to coding and data science agents, then take one to production.",
+      "tagline": "Auffarth, Generative AI with LangChain",
+      "title": "LangChain Apps"
+    },
+    {
+      "id": "ai-450",
+      "code": "AI 450",
+      "color": "moss",
+      "final": "Your reasoning model, evaluated against its base",
+      "grading": "weighted",
+      "hours": 4,
+      "number": "450",
+      "order": 5,
+      "summary": "Take a pretrained LLM and give it reasoning skills with Raschka: evaluate it, scale its inference-time compute, train it with reinforcement learning, and distill the result.",
+      "tagline": "Raschka, Build a Reasoning Model (From Scratch)",
+      "title": "Reasoning Models"
     }
   ],
   "modules": [
     {
       "id": "ai-410-m1",
       "courseId": "ai-410",
-      "summary": "Build the GPT forward pass from Raschka. Work out the 3090's decoding ceiling and measure how close llama.cpp gets.",
-      "title": "Model internals",
-      "weekEnd": 3,
+      "summary": "Ch. 1–4: text data and tokenization, attention mechanisms, and a GPT model that generates text. Project: work out the 3090's decoding ceiling against llama.cpp, then build the GPT forward pass.",
+      "title": "GPT from the ground up",
+      "weekEnd": 4,
       "weekStart": 1
     },
     {
       "id": "ai-410-m2",
       "courseId": "ai-410",
-      "summary": "Add a KV cache and batched generation to your model. Read the PagedAttention paper.",
-      "title": "KV cache and batching",
-      "weekEnd": 5,
-      "weekStart": 4
+      "summary": "Ch. 5: the training loop, decoding strategies, and loading OpenAI's GPT-2 weights. Project: add a KV cache and batched generation, read the PagedAttention paper, then profile the engine with torch.profiler and Nsight.",
+      "title": "Pretraining",
+      "weekEnd": 7,
+      "weekStart": 5
     },
     {
       "id": "ai-410-m3",
       "courseId": "ai-410",
-      "summary": "Profile your engine with torch.profiler, Nsight Systems and Nsight Compute. Write up where the time goes.",
-      "title": "Profiling",
-      "weekEnd": 6,
-      "weekStart": 6
+      "summary": "Ch. 6: fine-tune the GPT into a spam classifier. Project: RMSNorm and softmax kernels in Triton, then a 4-bit dequantize matrix-vector kernel. Week 9 is light.",
+      "title": "Classification fine-tuning",
+      "weekEnd": 10,
+      "weekStart": 8
     },
     {
       "id": "ai-410-m4",
       "courseId": "ai-410",
-      "summary": "Write RMSNorm and softmax kernels in Triton and benchmark them against PyTorch.",
-      "title": "Triton I",
-      "weekEnd": 8,
-      "weekStart": 7
-    },
-    {
-      "id": "ai-410-m5",
-      "courseId": "ai-410",
-      "summary": "A 4-bit dequantize and matrix-vector kernel, the operation that dominates decoding. Week 9 is light.",
-      "title": "Triton II",
-      "weekEnd": 10,
-      "weekStart": 9
-    },
-    {
-      "id": "ai-410-m6",
-      "courseId": "ai-410",
-      "summary": "Add a paged KV cache and compare your design with nano-vllm.",
-      "title": "Paged KV cache",
-      "weekEnd": 11,
-      "weekStart": 11
-    },
-    {
-      "id": "ai-410-m7",
-      "courseId": "ai-410",
-      "summary": "Ship the engine repo with a write-up benchmarking it against llama.cpp.",
-      "title": "Final",
+      "summary": "Ch. 7 and Appendix E: instruction fine-tuning and LoRA. Project: add a paged KV cache, compare it with nano-vllm, and ship the engine with a benchmark write-up.",
+      "title": "Instruction fine-tuning",
       "weekEnd": 12,
-      "weekStart": 12
+      "weekStart": 11
     },
     {
       "id": "ai-420-m1",
       "courseId": "ai-420",
-      "summary": "Build a gold-labeled extraction set of 100–200 documents from Tagger and define your metrics.",
-      "title": "Evaluation design",
-      "weekEnd": 2,
+      "summary": "Ch. 1–3: the LLM Twin architecture, the tooling, and data engineering. Project: build a gold-labeled extraction set of 100–200 Tagger documents and define your metrics.",
+      "title": "Architecture and data",
+      "weekEnd": 3,
       "weekStart": 1
     },
     {
       "id": "ai-420-m2",
       "courseId": "ai-420",
-      "summary": "Run BF16, Q8, Q6, Q4 and Q3 on the 3090, recording quality and tokens per second. Release the tool.",
-      "title": "Quantization sweep",
+      "summary": "Ch. 4–5: the RAG feature pipeline and supervised fine-tuning. Project: run BF16, Q8, Q6, Q4 and Q3 on the 3090, recording quality and tokens per second, and release the tool.",
+      "title": "RAG and fine-tuning",
       "weekEnd": 5,
-      "weekStart": 3
+      "weekStart": 4
     },
     {
       "id": "ai-420-m3",
       "courseId": "ai-420",
-      "summary": "Add few-shot prompting, self-consistency and verify-and-retry, then a QLoRA adapter on the quantized base.",
-      "title": "Recovery methods",
+      "summary": "Ch. 6–7: preference alignment and evaluating LLMs. Project: add few-shot prompting, self-consistency and verify-and-retry, then a QLoRA adapter on the quantized base.",
+      "title": "Alignment and evaluation",
       "weekEnd": 8,
       "weekStart": 6
     },
     {
       "id": "ai-420-m4",
       "courseId": "ai-420",
-      "summary": "One rented-GPU session testing MXFP4, the 4-bit format the 3090 cannot run.",
-      "title": "MXFP4",
+      "summary": "Ch. 8–9: inference optimization and the RAG inference pipeline. Week 9 is light. Project: one rented-GPU session testing MXFP4, the 4-bit format the 3090 cannot run.",
+      "title": "Inference",
       "weekEnd": 10,
-      "weekStart": 10
+      "weekStart": 9
     },
     {
       "id": "ai-420-m5",
       "courseId": "ai-420",
-      "summary": "Write the technical report, then post it to r/LocalLLaMA and Hacker News.",
-      "title": "Report",
+      "summary": "Ch. 10–11: deploying the inference pipeline, and MLOps and LLMOps. Project: write the technical report, then post it to r/LocalLLaMA and Hacker News.",
+      "title": "Deployment and report",
       "weekEnd": 12,
       "weekStart": 11
     },
     {
       "id": "ai-430-m1",
       "courseId": "ai-430",
-      "summary": "Text-layer extraction for native PDFs and Word files, and the Qwen3-VL-8B path for designed PDFs.",
-      "title": "Text and visual paths",
-      "weekEnd": 3,
+      "summary": "Ch. 1–3: what language models are, tokens and embeddings, and the transformer from the inside. Project: text-layer extraction for native PDFs and Word files, and the Qwen3-VL-8B path for designed PDFs.",
+      "title": "Inside language models",
+      "weekEnd": 4,
       "weekStart": 1
     },
     {
       "id": "ai-430-m2",
       "courseId": "ai-430",
-      "summary": "Exact and semantic search, the routing heuristic, and the thin FastAPI layer.",
-      "title": "Search and API",
-      "weekEnd": 6,
-      "weekStart": 4
+      "summary": "Ch. 4–6: text classification, clustering and topic modeling, and prompt engineering. Project: exact and semantic search, the routing heuristic, and the thin FastAPI layer.",
+      "title": "Using pretrained models",
+      "weekEnd": 7,
+      "weekStart": 5
     },
     {
       "id": "ai-430-m3",
       "courseId": "ai-430",
-      "summary": "A UI pass in the Swiss/Bauhaus vocabulary. The part of the project that keeps it interesting.",
-      "title": "Design review",
-      "weekEnd": 8,
-      "weekStart": 7
+      "summary": "Ch. 7–9: advanced text generation, semantic search and RAG, and multimodal models. Project: a UI pass in the Swiss/Bauhaus vocabulary. Week 9 is light.",
+      "title": "Generation, search and vision",
+      "weekEnd": 10,
+      "weekStart": 8
     },
     {
       "id": "ai-430-m4",
       "courseId": "ai-430",
-      "summary": "Write the engineering rationale, then delete one component and rebuild it yourself.",
-      "title": "Documentation",
-      "weekEnd": 11,
-      "weekStart": 10
+      "summary": "Ch. 10–12: embedding models, and fine-tuning for classification and generation. Project: write the engineering rationale, delete one component and rebuild it yourself, then record the demo.",
+      "title": "Training and fine-tuning",
+      "weekEnd": 12,
+      "weekStart": 11
     },
     {
-      "id": "ai-430-m5",
-      "courseId": "ai-430",
-      "summary": "A two-minute screen recording and a public repository.",
-      "title": "Demo day",
+      "id": "ai-440-m1",
+      "courseId": "ai-440",
+      "summary": "Ch. 1–3: generative models, LangChain's building blocks, and setting up model providers. The first edition predates LangChain 0.1, so expect to port some examples to the current API.",
+      "title": "Foundations",
+      "weekEnd": 3,
+      "weekStart": 1
+    },
+    {
+      "id": "ai-440-m2",
+      "courseId": "ai-440",
+      "summary": "Ch. 4–5: capable assistants with tools and reasoning strategies, then a ChatGPT-like chatbot with retrieval and memory.",
+      "title": "Assistants and chatbots",
+      "weekEnd": 5,
+      "weekStart": 4
+    },
+    {
+      "id": "ai-440-m3",
+      "courseId": "ai-440",
+      "summary": "Ch. 6–7: developing software with generative AI, and LLMs for data science.",
+      "title": "Code and data",
+      "weekEnd": 7,
+      "weekStart": 6
+    },
+    {
+      "id": "ai-440-m4",
+      "courseId": "ai-440",
+      "summary": "Ch. 8–10: conditioning and fine-tuning models, evaluation, deployment and observability, and where generative models are heading. Week 9 is light.",
+      "title": "Customization and production",
       "weekEnd": 12,
-      "weekStart": 12
+      "weekStart": 8
+    },
+    {
+      "id": "ai-450-m1",
+      "courseId": "ai-450",
+      "summary": "Ch. 1–2: what reasoning models are, and generating text with a pretrained LLM.",
+      "title": "Reasoning basics",
+      "weekEnd": 4,
+      "weekStart": 1
+    },
+    {
+      "id": "ai-450-m2",
+      "courseId": "ai-450",
+      "summary": "Ch. 3: evaluating reasoning models.",
+      "title": "Evaluation",
+      "weekEnd": 6,
+      "weekStart": 5
+    },
+    {
+      "id": "ai-450-m3",
+      "courseId": "ai-450",
+      "summary": "Ch. 4–5: inference-time scaling, and self-refinement.",
+      "title": "Inference-time scaling",
+      "weekEnd": 8,
+      "weekStart": 7
+    },
+    {
+      "id": "ai-450-m4",
+      "courseId": "ai-450",
+      "summary": "Ch. 6–7: training reasoning models with reinforcement learning, then improving GRPO. Week 9 is light.",
+      "title": "Reinforcement learning",
+      "weekEnd": 10,
+      "weekStart": 9
+    },
+    {
+      "id": "ai-450-m5",
+      "courseId": "ai-450",
+      "summary": "Ch. 8: distilling reasoning models for efficient reasoning, then comparing your model with its base.",
+      "title": "Distillation",
+      "weekEnd": 12,
+      "weekStart": 11
     }
   ],
   "assignments": [
@@ -201,7 +267,7 @@
       "moduleId": "ai-410-m1",
       "status": "Not started",
       "title": "Lab 1: 3090 roofline vs. llama.cpp",
-      "weight": 8
+      "weight": 5
     },
     {
       "id": "a410-2",
@@ -210,6 +276,15 @@
       "moduleId": "ai-410-m1",
       "status": "Not started",
       "title": "Lab 2: GPT forward pass from Raschka",
+      "weight": 5
+    },
+    {
+      "id": "a410-c1",
+      "courseId": "ai-410",
+      "due": "2026-10-25",
+      "moduleId": "ai-410-m1",
+      "status": "Not started",
+      "title": "Ch. 1–4: run the code and do the exercises",
       "weight": 8
     },
     {
@@ -219,43 +294,70 @@
       "moduleId": "ai-410-m2",
       "status": "Not started",
       "title": "Lab 3: KV cache and batched generation",
-      "weight": 8
+      "weight": 5
     },
     {
       "id": "a410-4",
       "courseId": "ai-410",
       "due": "2026-11-08",
-      "moduleId": "ai-410-m3",
+      "moduleId": "ai-410-m2",
       "status": "Not started",
       "title": "Midterm: profiling report on your engine",
-      "weight": 20
+      "weight": 15
+    },
+    {
+      "id": "a410-c2",
+      "courseId": "ai-410",
+      "due": "2026-11-15",
+      "moduleId": "ai-410-m2",
+      "status": "Not started",
+      "title": "Ch. 5: pretrain on a small corpus and load GPT-2 weights",
+      "weight": 8
     },
     {
       "id": "a410-5",
       "courseId": "ai-410",
       "due": "2026-11-22",
-      "moduleId": "ai-410-m4",
+      "moduleId": "ai-410-m3",
       "status": "Not started",
       "title": "Lab 4: RMSNorm and softmax kernels",
-      "weight": 8
+      "weight": 5
     },
     {
       "id": "a410-6",
       "courseId": "ai-410",
       "due": "2026-12-06",
-      "moduleId": "ai-410-m5",
+      "moduleId": "ai-410-m3",
       "status": "Not started",
       "title": "Lab 5: 4-bit dequant GEMV kernel",
+      "weight": 5
+    },
+    {
+      "id": "a410-c3",
+      "courseId": "ai-410",
+      "due": "2026-12-06",
+      "moduleId": "ai-410-m3",
+      "status": "Not started",
+      "title": "Ch. 6: fine-tune a spam classifier",
+      "weight": 8
+    },
+    {
+      "id": "a410-c4",
+      "courseId": "ai-410",
+      "due": "2026-12-13",
+      "moduleId": "ai-410-m4",
+      "status": "Not started",
+      "title": "Ch. 7 and Appendix E: instruction fine-tuning with LoRA",
       "weight": 8
     },
     {
       "id": "a410-7",
       "courseId": "ai-410",
       "due": "2026-12-18",
-      "moduleId": "ai-410-m7",
+      "moduleId": "ai-410-m4",
       "status": "Not started",
       "title": "Final: inference engine repo and benchmark write-up",
-      "weight": 40
+      "weight": 28
     },
     {
       "id": "a420-1",
@@ -264,7 +366,16 @@
       "moduleId": "ai-420-m1",
       "status": "Not started",
       "title": "Eval design memo and gold set",
-      "weight": 20
+      "weight": 14
+    },
+    {
+      "id": "a420-c1",
+      "courseId": "ai-420",
+      "due": "2026-10-18",
+      "moduleId": "ai-420-m1",
+      "status": "Not started",
+      "title": "Ch. 1–3: set up the stack and run the data pipeline",
+      "weight": 8
     },
     {
       "id": "a420-2",
@@ -273,7 +384,25 @@
       "moduleId": "ai-420-m2",
       "status": "Not started",
       "title": "Benchmark tool v0.1 released on GitHub",
-      "weight": 25
+      "weight": 18
+    },
+    {
+      "id": "a420-c2",
+      "courseId": "ai-420",
+      "due": "2026-11-01",
+      "moduleId": "ai-420-m2",
+      "status": "Not started",
+      "title": "Ch. 4–5: the RAG feature pipeline and a fine-tuning run",
+      "weight": 8
+    },
+    {
+      "id": "a420-c3",
+      "courseId": "ai-420",
+      "due": "2026-11-15",
+      "moduleId": "ai-420-m3",
+      "status": "Not started",
+      "title": "Ch. 6–7: a preference-alignment run and an evaluation",
+      "weight": 8
     },
     {
       "id": "a420-3",
@@ -285,13 +414,22 @@
       "weight": 0
     },
     {
+      "id": "a420-c4",
+      "courseId": "ai-420",
+      "due": "2026-12-06",
+      "moduleId": "ai-420-m4",
+      "status": "Not started",
+      "title": "Ch. 8–9: optimize inference and serve the RAG pipeline",
+      "weight": 8
+    },
+    {
       "id": "a420-4",
       "courseId": "ai-420",
       "due": "2026-12-13",
       "moduleId": "ai-420-m5",
       "status": "Not started",
       "title": "Technical report",
-      "weight": 40
+      "weight": 26
     },
     {
       "id": "a420-5",
@@ -300,7 +438,7 @@
       "moduleId": "ai-420-m5",
       "status": "Not started",
       "title": "Community post: r/LocalLLaMA and Hacker News",
-      "weight": 15
+      "weight": 10
     },
     {
       "id": "a430-1",
@@ -309,7 +447,16 @@
       "moduleId": "ai-430-m1",
       "status": "Not started",
       "title": "Milestone 1: both extraction paths working",
-      "weight": 20
+      "weight": 14
+    },
+    {
+      "id": "a430-c1",
+      "courseId": "ai-430",
+      "due": "2026-10-25",
+      "moduleId": "ai-430-m1",
+      "status": "Not started",
+      "title": "Ch. 1–3: tokenizers, embeddings and a look inside",
+      "weight": 8
     },
     {
       "id": "a430-2",
@@ -318,7 +465,16 @@
       "moduleId": "ai-430-m2",
       "status": "Not started",
       "title": "Milestone 2: search and the FastAPI layer",
-      "weight": 20
+      "weight": 14
+    },
+    {
+      "id": "a430-c2",
+      "courseId": "ai-430",
+      "due": "2026-11-15",
+      "moduleId": "ai-430-m2",
+      "status": "Not started",
+      "title": "Ch. 4–6: classification, topic modeling and prompting",
+      "weight": 8
     },
     {
       "id": "a430-3",
@@ -327,7 +483,16 @@
       "moduleId": "ai-430-m3",
       "status": "Not started",
       "title": "UI design pass",
-      "weight": 15
+      "weight": 10
+    },
+    {
+      "id": "a430-c3",
+      "courseId": "ai-430",
+      "due": "2026-12-06",
+      "moduleId": "ai-430-m3",
+      "status": "Not started",
+      "title": "Ch. 7–9: generation, RAG and multimodal models",
+      "weight": 8
     },
     {
       "id": "a430-4",
@@ -336,16 +501,106 @@
       "moduleId": "ai-430-m4",
       "status": "Not started",
       "title": "Rationale doc and comprehension audit",
-      "weight": 20
+      "weight": 12
+    },
+    {
+      "id": "a430-c4",
+      "courseId": "ai-430",
+      "due": "2026-12-13",
+      "moduleId": "ai-430-m4",
+      "status": "Not started",
+      "title": "Ch. 10–12: train an embedding model and fine-tune",
+      "weight": 8
     },
     {
       "id": "a430-5",
       "courseId": "ai-430",
       "due": "2026-12-18",
-      "moduleId": "ai-430-m5",
+      "moduleId": "ai-430-m4",
       "status": "Not started",
       "title": "Demo: two-minute recording and public repo",
-      "weight": 25
+      "weight": 18
+    },
+    {
+      "id": "a440-c1",
+      "courseId": "ai-440",
+      "due": "2026-10-18",
+      "moduleId": "ai-440-m1",
+      "status": "Not started",
+      "title": "Ch. 1–3: set up LangChain and run the first chains",
+      "weight": 20
+    },
+    {
+      "id": "a440-c2",
+      "courseId": "ai-440",
+      "due": "2026-11-01",
+      "moduleId": "ai-440-m2",
+      "status": "Not started",
+      "title": "Ch. 4–5: an assistant with tools and a retrieval chatbot",
+      "weight": 20
+    },
+    {
+      "id": "a440-c3",
+      "courseId": "ai-440",
+      "due": "2026-11-15",
+      "moduleId": "ai-440-m3",
+      "status": "Not started",
+      "title": "Ch. 6–7: a coding assistant and a data science agent",
+      "weight": 20
+    },
+    {
+      "id": "a440-f",
+      "courseId": "ai-440",
+      "due": "2026-12-18",
+      "moduleId": "ai-440-m4",
+      "status": "Not started",
+      "title": "Final: deploy one of your apps with evaluation and monitoring",
+      "weight": 40
+    },
+    {
+      "id": "a450-c1",
+      "courseId": "ai-450",
+      "due": "2026-10-25",
+      "moduleId": "ai-450-m1",
+      "status": "Not started",
+      "title": "Ch. 1–2: load a pretrained LLM and generate text",
+      "weight": 15
+    },
+    {
+      "id": "a450-c2",
+      "courseId": "ai-450",
+      "due": "2026-11-08",
+      "moduleId": "ai-450-m2",
+      "status": "Not started",
+      "title": "Ch. 3: evaluate the base model",
+      "weight": 15
+    },
+    {
+      "id": "a450-c3",
+      "courseId": "ai-450",
+      "due": "2026-11-22",
+      "moduleId": "ai-450-m3",
+      "status": "Not started",
+      "title": "Ch. 4–5: inference-time scaling and self-refinement",
+      "weight": 15
+    },
+    {
+      "id": "a450-c4",
+      "courseId": "ai-450",
+      "due": "2026-12-06",
+      "moduleId": "ai-450-m4",
+      "status": "Not started",
+      "title": "Ch. 6–7: train with GRPO",
+      "weight": 15
+    },
+    {
+      "id": "a450-f",
+      "courseId": "ai-450",
+      "due": "2026-12-18",
+      "moduleId": "ai-450-m5",
+      "status": "Not started",
+      "title": "Final: distill your model and evaluate it against the base",
+      "weight": 40
     }
   ],
   "documents": [
@@ -397,7 +652,7 @@
       "status": "Queued",
       "title": "Build a Large Language Model (From Scratch)",
       "url": "",
-      "weekEnd": 3,
+      "weekEnd": 12,
       "weekStart": 1
     },
     {
@@ -482,25 +737,8 @@
       "status": "Queued",
       "title": "LLM Engineer's Handbook",
       "url": "",
-      "weekEnd": 2,
+      "weekEnd": 12,
       "weekStart": 1
-    },
-    {
-      "id": "d420-b-002",
-      "author": "Sebastian Raschka",
-      "code": "420-B-002",
-      "courseId": "ai-420",
-      "kind": "Book",
-      "log": [],
-      "notes": "",
-      "pagesRead": 0,
-      "pagesTotal": null,
-      "role": "Required",
-      "status": "Queued",
-      "title": "Build a Reasoning Model (From Scratch)",
-      "url": "",
-      "weekEnd": 8,
-      "weekStart": 6
     },
     {
       "id": "d420-d-001",
@@ -570,8 +808,8 @@
       "status": "Queued",
       "title": "Hands-On Large Language Models",
       "url": "",
-      "weekEnd": 6,
-      "weekStart": 4
+      "weekEnd": 12,
+      "weekStart": 1
     },
     {
       "id": "d430-b-002",
@@ -620,6 +858,40 @@
       "role": "Required",
       "status": "Reference",
       "title": "Tagger",
+      "url": "",
+      "weekEnd": 12,
+      "weekStart": 1
+    },
+    {
+      "id": "d440-b-001",
+      "author": "Ben Auffarth",
+      "code": "440-B-001",
+      "courseId": "ai-440",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Generative AI with LangChain",
+      "url": "https://www.packtpub.com/en-us/product/generative-ai-with-langchain-9781835083468",
+      "weekEnd": 12,
+      "weekStart": 1
+    },
+    {
+      "id": "d420-b-002",
+      "author": "Sebastian Raschka",
+      "code": "450-B-001",
+      "courseId": "ai-450",
+      "kind": "Book",
+      "log": [],
+      "notes": "",
+      "pagesRead": 0,
+      "pagesTotal": null,
+      "role": "Required",
+      "status": "Queued",
+      "title": "Build a Reasoning Model (From Scratch)",
       "url": "",
       "weekEnd": 12,
       "weekStart": 1

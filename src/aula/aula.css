@@ -10,7 +10,7 @@
   --rule:rgba(30,28,25,.15);
   --rule-2:rgba(30,28,25,.42);
   --scrim:rgba(30,28,25,.34);
-  --caracol:#6E3F5C; --sky:#3D7FA8; --brick:#C9492E; --ochre:#E2A52B;
+  --caracol:#6E3F5C; --sky:#3D7FA8; --brick:#C9492E; --ochre:#E2A52B; --moss:#4F7A3A;
   --f-display:"Poiret One","Futura","Century Gothic","Avenir Next",system-ui,sans-serif;
   --f-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -21,14 +21,14 @@
   :root:not([data-theme="light"]){
     --bg:#1A1815; --surface:#221F1B; --sunk:#2C2823; --fg:#EFE6D4; --muted:#A79D8C;
     --rule:rgba(239,230,212,.13); --rule-2:rgba(239,230,212,.42); --scrim:rgba(0,0,0,.55);
-    --caracol:#A66B8E; --sky:#64A2CA; --brick:#DE6B52; --ochre:#E9B34E;
+    --caracol:#A66B8E; --sky:#64A2CA; --brick:#DE6B52; --ochre:#E9B34E; --moss:#7FA968;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#1A1815; --surface:#221F1B; --sunk:#2C2823; --fg:#EFE6D4; --muted:#A79D8C;
   --rule:rgba(239,230,212,.13); --rule-2:rgba(239,230,212,.42); --scrim:rgba(0,0,0,.55);
-  --caracol:#A66B8E; --sky:#64A2CA; --brick:#DE6B52; --ochre:#E9B34E;
+  --caracol:#A66B8E; --sky:#64A2CA; --brick:#DE6B52; --ochre:#E9B34E; --moss:#7FA968;
   color-scheme:dark;
 }
 

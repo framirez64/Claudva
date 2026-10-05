@@ -1,6 +1,6 @@
 import { parseISO, today, diffDays, fmt } from './dates.js';
 
-export const COLORS = ['caracol', 'sky', 'brick', 'ochre'];
+export const COLORS = ['caracol', 'sky', 'brick', 'ochre', 'moss'];
 export const KINDS = [['Book', 'B'], ['Paper', 'P'], ['Article', 'A'], ['Notes', 'N'], ['Dataset', 'D'], ['Video', 'V'], ['Repo', 'R'], ['Artifact', 'C']];
 export const KIND_NAMES = KINDS.map(k => k[0]);
 export const KIND_LETTER = Object.fromEntries(KINDS);

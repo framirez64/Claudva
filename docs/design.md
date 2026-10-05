@@ -6,7 +6,7 @@ Exported from Claude Docs on Sep 28, 2026. The Technical architecture section, t
 
 Aula is a personal learning system: Canvas's structure, rebuilt for one student on one machine. It keeps courses, weekly modules, assignments and a calendar, and redraws them in a Swiss modernist register.
 
-Its core job is tying every document to the course, week and assignment it serves, so nothing studied this semester floats loose. It launches holding the Fall 2026 semester: three courses, 12 weeks, September 28 to December 18.
+Its core job is tying every document to the course, week and assignment it serves, so nothing studied this semester floats loose. It launches holding the Fall 2026 semester: five classes, one per textbook, 12 weeks, September 28 to December 18.
 
 ## Outline
 
@@ -99,10 +99,11 @@ Aula is set like a specimen catalogue: hairline rules, flush-left type, hard edg
 | --- | --- | --- |
 | ink | `#1E1C19` | Text, rules, glyphs |
 | paper | `#EFE6D4` | Background |
-| caracol | `#6E3F5C` | AI 410 Inference Systems |
-| sky | `#3D7FA8` | AI 420 Evaluation Methods |
-| brick | `#C9492E` | AI 430 Product Studio |
-| ochre | `#E2A52B` | Unassigned since BUS 290 was dropped |
+| caracol | `#6E3F5C` | AI 410 LLMs from Scratch (Raschka) |
+| sky | `#3D7FA8` | AI 420 LLM Engineering (Iusztin and Labonne) |
+| brick | `#C9492E` | AI 430 Hands-On LLMs (Alammar and Grootendorst) |
+| ochre | `#E2A52B` | AI 440 LangChain Apps (Auffarth) |
+| moss | `#4F7A3A` | AI 450 Reasoning Models (Raschka) |
 
 **Glyphs.** Bauhaus primitives drawn in ink: a square for a document, a triangle for an assignment, a circle for a repo or artifact. Fill carries status: hollow not started, half in progress, solid done, a center dot for reference.
 
@@ -131,7 +132,9 @@ On first run the app imports `public/aula-data.json`, the semester exported from
 
 The term runs 2026-09-28 to 2026-12-18 in 12 weeks starting Mondays; week 9 (Nov 23–29, Thanksgiving) is a light week with nothing due. Assignments are due Sundays, and finals on Friday 2026-12-18. The full records are in `public/aula-data.json`.
 
-BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical courses; each course page ends with a Remove course action. It was removed from the seed the same day, so a fresh import starts with three courses.
+BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical courses; each course page ends with a Remove course action. It was removed from the seed the same day.
+
+On 2026-10-05 the semester was rebuilt as five classes, one per textbook, with chapters spread across weekly modules and one chapter assignment per module. The three project tracks moved to the book each builds on: the inference engine to AI 410, the quantization study to AI 420, and Tagger to AI 430. Only the reasoning book was re-coded (420-B-002 became 450-B-001).
 
 ## Build plan
 
@@ -147,7 +150,7 @@ BUS 290 Consulting Practicum was dropped on 2026-09-28 to focus on the technical
 | Name | Aula | Open |
 | Stack | React and Vite | Decided |
 | File storage | Blobs in IndexedDB for now; managed folders when the backend lands | Open |
-| Course colors | 410 caracol, 420 sky, 430 brick; ochre unassigned | Open |
+| Course colors | 410 caracol, 420 sky, 430 brick, 440 ochre, 450 moss | Open |
 | Glyph color | Ink only | Open |
 | Progress | Self-assessed, weighted scores | Open |
 | Practicum grading | Completion, no weights | Dropped with BUS 290 |
