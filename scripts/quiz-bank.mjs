@@ -4,7 +4,7 @@
 //   node scripts/quiz-bank.mjs <chapters.pdf> [--out private/quizzes/ai-430-m1] [--book "..."] [--mc 6 --short 3 --long 2] [--yes]
 //   node scripts/quiz-bank.mjs --render <bank.json>     rewrite the Markdown from a saved bank, no API call
 //
-// Needs ANTHROPIC_API_KEY in the environment or in .env.local (gitignored).
+// Needs ANTHROPIC_API_KEY in the environment, or in .env or .env.local (both gitignored).
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline/promises';
@@ -124,8 +124,8 @@ async function main() {
     throw new Error(`The PDF is ${(pdf.length / 1048576).toFixed(1)} MB, too large for one request once encoded (about 23 MB is the ceiling). Split it into smaller chapter ranges.`);
   }
 
-  try { process.loadEnvFile('.env.local'); } catch { /* the key can also come from the environment */ }
-  if (!process.env.ANTHROPIC_API_KEY) throw new Error('Set ANTHROPIC_API_KEY, or put ANTHROPIC_API_KEY=... in .env.local at the repo root.');
+  for (const f of ['.env.local', '.env']) { try { process.loadEnvFile(f); } catch { /* the key can also come from the environment */ } }
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error('Set ANTHROPIC_API_KEY, or put ANTHROPIC_API_KEY=... in .env at the repo root.');
   const client = new Anthropic();
 
   const messages = [{
