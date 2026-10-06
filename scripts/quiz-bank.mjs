@@ -13,7 +13,7 @@
 //   visuals   lists every numbered figure and every code block, then writes at least one question about each
 // Running make again with --chapters 2 (and optionally --pass) replaces just that part of the bank.
 //
-// Needs ANTHROPIC_API_KEY in the environment, or in .env or .env.local (both gitignored).
+// Needs ANTHROPIC_API_KEY (or CLAUDE_KEY) in the environment, or in .env or .env.local (both gitignored).
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -151,8 +151,9 @@ const GRADE_SYSTEM = `You grade a student's written answers to study questions a
 /* ---------- helpers ---------- */
 function loadKey() {
   for (const f of ['.env.local', '.env']) { try { process.loadEnvFile(f); } catch { /* the key can also come from the environment */ } }
-  if (!process.env.ANTHROPIC_API_KEY) throw new Error('Set ANTHROPIC_API_KEY, or put ANTHROPIC_API_KEY=... in .env at the repo root.');
-  return new Anthropic({ maxRetries: 4 });
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_KEY;
+  if (!apiKey) throw new Error('Set ANTHROPIC_API_KEY (or CLAUDE_KEY), or put it in .env at the repo root.');
+  return new Anthropic({ apiKey, maxRetries: 4 });
 }
 
 async function confirm(o, question) {
@@ -321,14 +322,28 @@ async function extractFigures(pdfPath, dir) {
   fs.mkdirSync(figDir, { recursive: true });
   const found = new Map();
   const doc = await pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(pdfPath)), isEvalSupported: false, disableFontFace: true, verbosity: 0 }).promise;
-  for (let p = 1; p <= doc.numPages; p++) {
-    const page = await doc.getPage(p);
-    const rows = new Map();
-    for (const it of (await page.getTextContent()).items) if (it.str) { const y = Math.round(it.transform[5]); rows.set(y, [...(rows.get(y) || []), it]); }
-    const captions = [...rows].map(([y, items]) => ({ y, m: /^\s*Figure\s+(\d+)[-.](\d+)/.exec(items.sort((a, b) => a.transform[4] - b.transform[4]).map(i => i.str).join('')) }))
-      .filter(c => c.m).map(c => ({ id: `${c.m[1]}-${c.m[2]}`, y: c.y })).sort((a, b) => b.y - a.y);
-    if (!captions.length) continue;
 
+  // Lines that start "Figure N-M." are captions, or body text that happens to mention a figure at the start of a line.
+  // Captions are set in their own font: the one most "Figure N-M. Some text" lines use.
+  const lines = [];
+  for (let p = 1; p <= doc.numPages; p++) {
+    const page = await doc.getPage(p), rows = new Map();
+    for (const it of (await page.getTextContent()).items) if (it.str) { const y = Math.round(it.transform[5]); rows.set(y, [...(rows.get(y) || []), it]); }
+    for (const [y, items] of rows) {
+      items.sort((a, b) => a.transform[4] - b.transform[4]);
+      const m = /^\s*Figure\s+(\d+)[-.](\d+)\.(\s+\S)?/.exec(items.map(i => i.str).join(''));
+      if (m) lines.push({ p, y, id: `${m[1]}-${m[2]}`, font: items[0].fontName, text: !!m[3] });
+    }
+    page.cleanup();
+  }
+  const tally = {};
+  for (const l of lines) if (l.text) tally[l.font] = (tally[l.font] || 0) + 1;
+  const captionFont = Object.entries(tally).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const captionLines = lines.filter(l => (captionFont ? l.font === captionFont : l.text));
+
+  for (const p of [...new Set(captionLines.map(l => l.p))]) {
+    const page = await doc.getPage(p);
+    const captions = captionLines.filter(l => l.p === p).sort((a, b) => b.y - a.y);
     const ops = await page.getOperatorList();
     let ctm = [1, 0, 0, 1, 0, 0];
     const stack = [], images = [];
