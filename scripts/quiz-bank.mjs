@@ -3,7 +3,10 @@
 //
 //   npm run quiz -- make <chapters.pdf> --chapters 1-3 [--pass concepts|visuals] [--out dir] [--book "..."] [--parallel 3] [--yes]
 //   npm run quiz -- grade [dir] [--yes]    mark answers.md against the key, write graded.md
-//   npm run quiz -- render [dir]           rewrite quiz.md and key.md from bank.json, no API call
+//   npm run quiz -- render [dir] [--pdf chapters.pdf]   rebuild the quiz and key from bank.json, no API call
+//
+// Output per module: quiz.pdf and key.pdf to print (figures cut from your PDF, code, ruled answer space;
+// long answers go on a separate sheet), the same as Markdown, and answers.md for typing answers instead.
 //
 // make runs two passes per chapter, all sharing one cached copy of the PDF:
 //   concepts  maps the chapter's concepts, then writes multiple-choice and explanatory questions until every one is covered
@@ -12,8 +15,11 @@
 //
 // Needs ANTHROPIC_API_KEY in the environment, or in .env or .env.local (both gitignored).
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import readline from 'node:readline/promises';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import Anthropic from '@anthropic-ai/sdk';
 
 const MODEL = 'claude-opus-5-5';
@@ -43,7 +49,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--yes') o.yes = true;
-    else if (['--out', '--book', '--chapters', '--pass'].includes(a)) o[a.slice(2)] = argv[++i];
+    else if (['--out', '--book', '--chapters', '--pass', '--pdf'].includes(a)) o[a.slice(2)] = argv[++i];
     else if (a === '--parallel') o.parallel = Math.max(1, Number(argv[++i]) || 1);
     else if (a.startsWith('--')) throw new Error('Unknown option ' + a);
     else o.positional.push(a);
@@ -239,7 +245,10 @@ function checkBank(bank) {
 const fence = code => ['```python', code.replace(/\s+$/, ''), '```'];
 const cell = s => String(s).replace(/\|/g, '\\|').replace(/\n+/g, ' ');
 
-function renderQuiz(bank) {
+// Figures a question shows: the ones it covers, plus any named in its figure field.
+const figuresOf = q => [...new Set([...q.targets.map(figureId), ...[...String(q.figure).matchAll(/(\d+)[-.](\d+)/g)].map(m => `${m[1]}-${m[2]}`)])];
+
+function renderQuiz(bank, figs = new Map()) {
   const qs = layout(bank), titles = new Map(bank.chapters.map(c => [c.chapter.number, c.chapter.title]));
   const lines = [`# ${heading(bank)} · Quiz`, '',
     `${qs.length} questions in three parts. Write your answers under the matching numbers in answers.md, then run \`npm run quiz -- grade\` with this folder. The key is in key.md.`, ''];
@@ -252,7 +261,9 @@ function renderQuiz(bank) {
       if (q.chapter !== last) { lines.push(`### Chapter ${q.chapter}: ${titles.get(q.chapter)}`, ''); last = q.chapter; }
       const meta = [KINDS[q.kind], q.level, q.section === 'multiple_choice' ? '' : `${points(q)} points`].filter(Boolean).join(' · ');
       lines.push(`**${q.number}.** ${q.prompt}  `, `*${meta}*`, '');
-      if (q.figure) lines.push(`*Look at ${q.figure}.*`, '');
+      const shown = figuresOf(q).filter(id => figs.has(id));
+      for (const id of shown) lines.push(...figs.get(id).map(src => `![Figure ${id}](${src})`), '');
+      if (q.figure && !shown.length) lines.push(`*Look at ${q.figure}.*`, '');
       if (q.code) lines.push(...fence(q.code), '');
       if (q.section === 'multiple_choice') { q.choices.forEach((c, i) => lines.push(`- ${LETTERS[i]}. ${c}`)); lines.push(''); }
     }
@@ -285,13 +296,203 @@ function renderKey(bank) {
   return lines.join('\n');
 }
 
-function writeQuizFiles(bank, dir) {
-  fs.writeFileSync(path.join(dir, 'quiz.md'), renderQuiz(bank));
+/* ---------- figures cut from the source PDF ---------- */
+// Finds each "Figure N-M" caption and saves the embedded images drawn between it and the caption above it.
+// A figure drawn as vector graphics has no embedded image; the quiz then points to its page in the book.
+async function extractFigures(pdfPath, dir) {
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const { PNG } = (await import('pngjs')).default;
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdf.worker.mjs', import.meta.resolve('pdfjs-dist/legacy/build/pdf.mjs')).href;
+  const OPS = pdfjs.OPS;
+  const mul = (m, n) => [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]];
+  const toPng = ({ width, height, kind, data }) => {
+    const png = new PNG({ width, height });
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const o = (y * width + x) * 4;
+      if (kind === 3) png.data.set(data.subarray(o, o + 4), o);
+      else if (kind === 2) { const i = (y * width + x) * 3; png.data.set([data[i], data[i + 1], data[i + 2], 255], o); }
+      else { const v = data[y * ((width + 7) >> 3) + (x >> 3)] & (128 >> (x & 7)) ? 255 : 0; png.data.set([v, v, v, 255], o); }
+    }
+    return PNG.sync.write(png);
+  };
+
+  const figDir = path.join(dir, 'figures');
+  fs.rmSync(figDir, { recursive: true, force: true });
+  fs.mkdirSync(figDir, { recursive: true });
+  const found = new Map();
+  const doc = await pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(pdfPath)), isEvalSupported: false, disableFontFace: true, verbosity: 0 }).promise;
+  for (let p = 1; p <= doc.numPages; p++) {
+    const page = await doc.getPage(p);
+    const rows = new Map();
+    for (const it of (await page.getTextContent()).items) if (it.str) { const y = Math.round(it.transform[5]); rows.set(y, [...(rows.get(y) || []), it]); }
+    const captions = [...rows].map(([y, items]) => ({ y, m: /^\s*Figure\s+(\d+)[-.](\d+)/.exec(items.sort((a, b) => a.transform[4] - b.transform[4]).map(i => i.str).join('')) }))
+      .filter(c => c.m).map(c => ({ id: `${c.m[1]}-${c.m[2]}`, y: c.y })).sort((a, b) => b.y - a.y);
+    if (!captions.length) continue;
+
+    const ops = await page.getOperatorList();
+    let ctm = [1, 0, 0, 1, 0, 0];
+    const stack = [], images = [];
+    ops.fnArray.forEach((fn, i) => {
+      const args = ops.argsArray[i];
+      if (fn === OPS.save) stack.push(ctm);
+      else if (fn === OPS.restore) ctm = stack.pop() || ctm;
+      else if (fn === OPS.transform) ctm = mul(ctm, args);
+      else if (fn === OPS.paintFormXObjectBegin) { stack.push(ctm); if (args[0]) ctm = mul(ctm, args[0]); }
+      else if (fn === OPS.paintFormXObjectEnd) ctm = stack.pop() || ctm;
+      else if (fn === OPS.paintImageXObject || fn === OPS.paintInlineImageXObject) {
+        const xs = [0, ctm[0], ctm[2], ctm[0] + ctm[2]], ys = [0, ctm[1], ctm[3], ctm[1] + ctm[3]];
+        const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+        if (w >= 60 && h >= 30) images.push({ ref: args[0], top: ctm[5] + Math.max(...ys), bottom: ctm[5] + Math.min(...ys) }); // skips icons
+      }
+    });
+    const resolve = ref => (typeof ref === 'string' ? new Promise(res => (ref.startsWith('g_') ? page.commonObjs : page.objs).get(ref, res)) : Promise.resolve(ref));
+    for (const [k, c] of captions.entries()) {
+      const ceiling = k === 0 ? Infinity : captions[k - 1].y;
+      const mine = images.filter(m => m.bottom >= c.y - 2 && m.top <= ceiling + 2).sort((a, b) => b.top - a.top);
+      const files = [];
+      for (const [j, m] of mine.entries()) {
+        const img = await resolve(m.ref);
+        if (!img || !img.data) continue;
+        const name = `${c.id}${mine.length > 1 ? '-' + (j + 1) : ''}.png`;
+        fs.writeFileSync(path.join(figDir, name), toPng(img));
+        files.push(`figures/${name}`);
+      }
+      if (files.length) found.set(c.id, files);
+    }
+    page.cleanup();
+  }
+  await doc.destroy();
+  return found;
+}
+
+/* ---------- printable HTML and PDF ---------- */
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const ON_PAGE_LINES = { why: 6, what_if: 6, predict_output: 4, find_bug: 5 }; // the other written kinds go on a separate sheet
+const POIRET = new URL('../src/aula/fonts/Poiret_One/PoiretOne-Regular.ttf', import.meta.url).href;
+
+function printPage(title, footer, body) {
+  const css = `@font-face{font-family:"Poiret One";src:url("${POIRET}") format("truetype")}
+@page{size:Letter;margin:0.7in 0.75in 0.8in;
+  @bottom-left{content:${JSON.stringify(footer)};font:8pt "Segoe UI",Arial,sans-serif;color:#666}
+  @bottom-right{content:"Page " counter(page) " of " counter(pages);font:8pt "Segoe UI",Arial,sans-serif;color:#666}}
+*{box-sizing:border-box}
+body{font:10.5pt/1.45 "Segoe UI",Inter,Arial,sans-serif;color:#111;margin:0}
+h1{font:400 26pt/1.1 "Poiret One","Segoe UI",sans-serif;margin:0 0 4pt}
+h2{font:400 18pt/1.2 "Poiret One","Segoe UI",sans-serif;border-bottom:2px solid #111;padding-bottom:4pt;margin:0 0 10pt}
+h2.new{break-before:page}
+h3{font:600 8.5pt "Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#444;margin:14pt 0 8pt}
+p{margin:0}
+.sub{color:#555;margin:0 0 14pt}
+.fill{display:flex;gap:24pt;margin:0 0 12pt}.fill span{flex:1;border-bottom:1px solid #111;padding-bottom:2pt;color:#555;font-size:9pt}
+.note{border:1px solid #111;padding:8pt 10pt;margin:0 0 18pt;font-size:9.5pt}
+.q{break-inside:avoid;margin:0 0 16pt}
+.n{font-weight:700}
+.meta{font-size:8.5pt;color:#555;margin:2pt 0 5pt}
+.choices{list-style:none;margin:4pt 0 0;padding:0}.choices li{display:flex;gap:7pt;margin:3pt 0}
+.box{flex:none;width:9pt;height:9pt;border:1px solid #111;margin-top:3pt}
+pre{font:8.8pt/1.4 Consolas,"IBM Plex Mono",monospace;border:1px solid #999;padding:6pt 8pt;margin:6pt 0;white-space:pre-wrap}
+figure{margin:6pt 0}figure img{display:block;max-width:100%;max-height:3.4in;margin:0 0 3pt}figcaption,.lookup{font-size:8.5pt;color:#555}
+.lookup{font-style:italic;margin:4pt 0}
+.lines div{height:0.3in;border-bottom:1px solid #aaa}
+.sheet{display:inline-block;border:1px solid #111;padding:2pt 6pt;font-size:8.5pt;margin-top:5pt}
+.answer{white-space:pre-wrap;margin:2pt 0 4pt}
+table{border-collapse:collapse;width:100%;font-size:9pt;margin:4pt 0}td{border-bottom:1px solid #ccc;padding:3pt 4pt;vertical-align:top}td:last-child{text-align:right;width:50pt}`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${css}</style></head><body>${body}</body></html>`;
+}
+
+function quizHtml(bank, figs) {
+  const qs = layout(bank), titles = new Map(bank.chapters.map(c => [c.chapter.number, c.chapter.title]));
+  const out = [`<h1>${esc(heading(bank))}</h1>`, `<p class="sub">Quiz · ${qs.length} questions in three parts</p>`,
+    '<div class="fill"><span>Name</span><span>Date</span><span>Score</span></div>',
+    '<div class="note">Part 1: tick one box for each question. Parts 2 and 3: write on the lines. Questions marked <b>Separate sheet</b> need more room: answer them on your own paper and start each answer with its number, such as Q42.</div>'];
+  SECTIONS.forEach((s, si) => {
+    const part = qs.filter(q => q.section === s.id);
+    if (!part.length) return;
+    out.push(`<h2${si ? ' class="new"' : ''}>${esc(s.title)}</h2>`);
+    let last = null;
+    for (const q of part) {
+      if (q.chapter !== last) { out.push(`<h3>Chapter ${q.chapter}: ${esc(titles.get(q.chapter))}</h3>`); last = q.chapter; }
+      const written = q.section !== 'multiple_choice';
+      out.push('<div class="q">', `<p><span class="n">Q${q.number}.</span> ${esc(q.prompt)}</p>`,
+        `<p class="meta">${esc([KINDS[q.kind], q.level, written ? `${points(q)} points` : ''].filter(Boolean).join(' · '))}</p>`);
+      const shown = figuresOf(q).filter(id => figs.has(id));
+      for (const id of shown) out.push(`<figure>${figs.get(id).map(src => `<img src="${esc(src)}" alt="Figure ${esc(id)}">`).join('')}<figcaption>Figure ${esc(id)}</figcaption></figure>`);
+      if (q.figure && !shown.length) out.push(`<p class="lookup">Look at ${esc(q.figure)} in the book.</p>`);
+      if (q.code) out.push(`<pre>${esc(q.code.replace(/\s+$/, ''))}</pre>`);
+      if (!written) out.push(`<ul class="choices">${q.choices.map((c, i) => `<li><span class="box"></span><span>${LETTERS[i]}. ${esc(c)}</span></li>`).join('')}</ul>`);
+      else if (ON_PAGE_LINES[q.kind]) out.push(`<div class="lines">${'<div></div>'.repeat(ON_PAGE_LINES[q.kind])}</div>`);
+      else out.push(`<span class="sheet">Separate sheet · Q${q.number}</span>`);
+      out.push('</div>');
+    }
+  });
+  return printPage(`${heading(bank)} · Quiz`, `${heading(bank)} · Quiz`, out.join('\n'));
+}
+
+function keyHtml(bank) {
+  const qs = layout(bank), items = itemIndex(bank);
+  const out = [`<h1>${esc(heading(bank))}</h1>`, '<p class="sub">Key</p>'];
+  SECTIONS.forEach((s, si) => {
+    const part = qs.filter(q => q.section === s.id);
+    if (!part.length) return;
+    out.push(`<h2${si ? ' class="new"' : ''}>${esc(s.title)}</h2>`);
+    for (const q of part) {
+      const tests = covers(q).map(id => (items.get(id) || { label: id }).label).join('; ');
+      out.push('<div class="q">', q.section === 'multiple_choice'
+        ? `<p><span class="n">Q${q.number}.</span> <b>${esc(q.answer)}.</b> ${esc(q.choices[LETTERS.indexOf(q.answer)] || '')}</p>`
+        : `<p><span class="n">Q${q.number}.</span></p><p class="answer">${esc(q.answer)}</p>`,
+      `<p>${esc(q.explanation)}</p>`, `<p class="meta">Ch. ${q.chapter}, p. ${esc(q.pages)} · ${esc(tests)}</p>`);
+      if (q.rubric.length) out.push(`<table>${q.rubric.map(r => `<tr><td>${esc(r.criterion)}</td><td>${r.points} pts</td></tr>`).join('')}</table>`);
+      out.push('</div>');
+    }
+  });
+  return printPage(`${heading(bank)} · Key`, `${heading(bank)} · Key`, out.join('\n'));
+}
+
+function findBrowser() {
+  return [process.env.CHROME_PATH,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => p && fs.existsSync(p));
+}
+
+function printToPdf(browser, htmlFile, pdfFile) {
+  const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'quiz-print-')); // a throwaway profile, so your open browser is untouched
+  try {
+    execFileSync(browser, ['--headless=new', '--disable-gpu', '--no-pdf-header-footer', `--user-data-dir=${profile}`,
+      `--print-to-pdf=${path.resolve(pdfFile)}`, pathToFileURL(path.resolve(htmlFile)).href], { stdio: 'ignore', timeout: 180000 });
+  } finally {
+    try { fs.rmSync(profile, { recursive: true, force: true }); } catch { /* a temp folder; the OS clears it */ }
+  }
+}
+
+async function renderAll(bank, dir, pdfPath) {
+  let figs = new Map();
+  const ids = bank.chapters.flatMap(c => c.figures.map(f => figureId(f.id)));
+  if (pdfPath && fs.existsSync(pdfPath)) {
+    figs = await extractFigures(pdfPath, dir);
+    const missing = ids.filter(id => !figs.has(id));
+    console.log(`figures: ${ids.length - missing.length} of ${ids.length} cut from the PDF` +
+      (missing.length ? `; the quiz points to the book for ${missing.join(', ')} (drawn as vector graphics, or captioned differently)` : ''));
+  } else if (ids.length) {
+    console.log('figures: the source PDF was not found, so the quiz points to book pages. Run render with --pdf <file> to include them.');
+  }
+
+  fs.writeFileSync(path.join(dir, 'quiz.md'), renderQuiz(bank, figs));
   fs.writeFileSync(path.join(dir, 'key.md'), renderKey(bank));
   const sheet = path.join(dir, 'answers.md');
   if (fs.existsSync(sheet)) console.log('kept your answers.md; delete it for a fresh sheet if the questions changed');
   else fs.writeFileSync(sheet, renderAnswerSheet(bank));
-  console.log('wrote quiz.md, key.md and answers.md in', dir);
+  fs.writeFileSync(path.join(dir, 'quiz.html'), quizHtml(bank, figs));
+  fs.writeFileSync(path.join(dir, 'key.html'), keyHtml(bank));
+
+  const browser = findBrowser();
+  if (browser) {
+    printToPdf(browser, path.join(dir, 'quiz.html'), path.join(dir, 'quiz.pdf'));
+    printToPdf(browser, path.join(dir, 'key.html'), path.join(dir, 'key.pdf'));
+    console.log('wrote quiz.pdf and key.pdf to print, plus quiz.md, key.md and answers.md, in', dir);
+  } else {
+    console.log('No Chrome or Edge found to make PDFs: open quiz.html and key.html in a browser and print them. Wrote them in', dir);
+  }
 }
 
 /* ---------- make ---------- */
@@ -383,9 +584,10 @@ async function make(o) {
   });
   bank.chapters.sort((a, b) => a.chapter.number - b.chapter.number);
   bank.updatedAt = new Date().toISOString();
+  bank.sourcePath = path.relative(process.cwd(), path.resolve(o.target)); // so render can cut figures again later
   if (!bank.chapters.length) throw new Error('Nothing came back; nothing written.');
   fs.writeFileSync(bankPath(o.out), JSON.stringify(bank, null, 2) + '\n');
-  writeQuizFiles(bank, o.out);
+  await renderAll(bank, o.out, o.target);
 
   for (const ch of bank.chapters) {
     const count = s => ch.questions.filter(q => q.section === s).length;
@@ -525,7 +727,7 @@ async function main() {
   if (o.command === 'grade') return grade(o);
   if (o.command === 'render') {
     const dir = o.target || o.out, bank = loadBank(dir);
-    writeQuizFiles(bank, dir);
+    await renderAll(bank, dir, o.pdf || bank.sourcePath);
     for (const p of checkBank(bank)) console.warn('check:', p);
     return;
   }
