@@ -4,6 +4,7 @@
 //   npm run quiz -- make <chapters.pdf> --chapters 1-3 [--pass concepts|visuals] [--out dir] [--book "..."] [--parallel 3] [--yes]
 //   npm run quiz -- grade [dir] [--yes]    mark answers.md against the key, write graded.md
 //   npm run quiz -- render [dir] [--pdf chapters.pdf]   rebuild the quiz and key from bank.json, no API call
+//   npm run quiz -- balance [dir] [--yes]  rewrite multiple-choice options whose correct answer is clearly the longest
 //
 // Output per module: quiz.pdf and key.pdf to print (figures cut from your PDF, code, ruled answer space;
 // long answers go on a separate sheet), the same as Markdown, and answers.md for typing answers instead.
@@ -134,7 +135,7 @@ function makeInstructions(o, chapters) {
 Concepts pass: map the chapter, then write its multiple_choice and explanatory questions.
 1. List the chapter's concepts in the order it teaches them: every idea, technique, term, result, or design choice a reader should take away, granular enough that mastering all of them means mastering the chapter. Mark each one core (central to the chapter, or needed later in the book) or supporting.
 2. Write questions until every concept is covered:
-- multiple_choice: at least one question per concept, and two or more for each core concept, testing different aspects. Four options, exactly one correct, with wrong options drawn from realistic misconceptions. Vary the position of the correct answer.
+- multiple_choice: at least one question per concept, and two or more for each core concept, testing different aspects. Four options, exactly one correct, with wrong options drawn from realistic misconceptions. Vary the position of the correct answer. Write all four options at about the same length and level of detail, so the correct one can't be spotted by being the longest or the most qualified: keep it plain, and give wrong options the same specificity.
 - explanatory: at least one per core concept, mixing explain (in your own words), why, what_if (what changes if an assumption or setting changes), and compare.
 Leave figures and listings empty.
 
@@ -208,8 +209,18 @@ const heading = bank => `${String(bank.book || '').split(',')[0]} · ${chapterRa
 const points = q => q.rubric.reduce((s, r) => s + r.points, 0);
 
 /* ---------- checks ---------- */
+// A multiple-choice question gives itself away when its correct option is clearly the longest.
+const LENGTH_TELL = 1.15;
+function givesAway(q) {
+  const lens = q.choices.map(c => c.length), i = LETTERS.indexOf(q.answer);
+  return i >= 0 && lens[i] >= LENGTH_TELL * Math.max(...lens.filter((_, j) => j !== i));
+}
+
 function checkBank(bank) {
   const problems = [];
+  const mc = bank.chapters.flatMap(c => c.questions).filter(q => q.section === 'multiple_choice' && q.choices.length === 4);
+  const tells = mc.filter(givesAway).length;
+  if (mc.length && tells / mc.length > 0.3) problems.push(`in ${tells} of ${mc.length} multiple-choice questions the correct option is clearly the longest; run balance to even them out`);
   for (const ch of bank.chapters) {
     const n = ch.chapter.number, passes = ch.passes || {};
     const tested = section => new Set(ch.questions.filter(q => q.section === section).flatMap(q => q.concepts));
@@ -615,6 +626,68 @@ async function make(o) {
   for (const t of failed) console.warn(`Rerun: npm run quiz -- make ${o.target} --chapters ${t.n} --pass ${t.pass} --out ${o.out}`);
 }
 
+/* ---------- balance ---------- */
+const BALANCE_SCHEMA = strictObject({
+  items: {
+    type: 'array',
+    items: strictObject({
+      number: { type: 'integer' },
+      choices: { type: 'array', items: str(), description: 'The four rewritten options, in the original order, without letters.' },
+      explanation: str('The explanation, updated to match the rewritten options.'),
+    }),
+  },
+});
+
+const BALANCE_SYSTEM = `You edit multiple-choice study questions so the correct option can't be spotted by its length or its extra qualifications. Keep each question's meaning, its correct answer, and the position of the correct answer. Make all four options about the same length and level of detail: trim padding and hedges from the correct option, and give the wrong options the same specificity, so each stays tempting to someone who misread the material and clearly wrong to someone who understood it. Update the explanation to match the new wording.`;
+
+async function balance(o) {
+  const dir = o.target || o.out;
+  const bank = loadBank(dir);
+  const refs = layout(bank).filter(q => q.section === 'multiple_choice' && givesAway(q));
+  const mcTotal = layout(bank).filter(q => q.section === 'multiple_choice').length;
+  if (!refs.length) { console.log('No multiple-choice question gives its answer away by length.'); return; }
+
+  // layout() numbers copies of the questions; this maps each number back to the question in the bank.
+  const byNumber = new Map();
+  let n = 0;
+  for (const s of SECTIONS) for (const ch of bank.chapters) for (const q of ch.questions) if (q.section === s.id) { n++; byNumber.set(n, q); }
+
+  const client = loadKey();
+  const items = refs.map(q => ({ number: q.number, question: q.prompt, choices: q.choices, correct: q.answer, explanation: q.explanation }));
+  const chunks = [];
+  for (let i = 0; i < items.length; i += 40) chunks.push(items.slice(i, i + 40));
+  const messagesFor = chunk => [{ role: 'user', content: `Rebalance the options of these questions. Return one entry per number.\n\n${JSON.stringify(chunk, null, 2)}` }];
+  const { input_tokens } = await client.messages.countTokens({ model: MODEL, system: BALANCE_SYSTEM, messages: messagesFor(items) });
+  const est = (input_tokens * PRICE.input + (items.length * 350 + chunks.length * 4000) * PRICE.output) / 1e6;
+  console.log(`${refs.length} of ${mcTotal} multiple-choice questions give their answer away by length · about ${dollars(est)} to rebalance`);
+  if (!(await confirm(o, 'Rebalance them?'))) return;
+
+  const usage = {};
+  let changed = 0;
+  for (const [i, chunk] of chunks.entries()) {
+    if (chunks.length > 1) console.log(`Rebalancing ${i + 1} of ${chunks.length}...`);
+    const message = await client.beta.messages.stream({
+      model: MODEL, max_tokens: 64000,
+      betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',
+      system: BALANCE_SYSTEM,
+      output_config: { effort: 'medium', format: { type: 'json_schema', schema: BALANCE_SCHEMA } },
+      messages: messagesFor(chunk),
+    }).finalMessage();
+    addUsage(usage, message.usage);
+    for (const it of readJsonReply(message, 'Rebalancing').items) {
+      const q = byNumber.get(it.number);
+      if (!q || q.section !== 'multiple_choice' || it.choices.length !== 4) continue;
+      q.choices = it.choices;
+      q.explanation = it.explanation;
+      changed++;
+    }
+  }
+  const still = layout(bank).filter(q => q.section === 'multiple_choice' && givesAway(q)).length;
+  fs.writeFileSync(bankPath(dir), JSON.stringify(bank, null, 2) + '\n');
+  console.log(`Rebalanced ${changed} questions; ${still} of ${mcTotal} still have a clearly longest correct option · about ${dollars(costOf(usage))}`);
+  await renderAll(bank, dir, o.pdf || bank.sourcePath);
+}
+
 /* ---------- grade ---------- */
 function readAnswers(file) {
   const answers = new Map();
@@ -740,13 +813,14 @@ async function main() {
   const o = parseArgs(process.argv.slice(2));
   if (o.command === 'make') return make(o);
   if (o.command === 'grade') return grade(o);
+  if (o.command === 'balance') return balance(o);
   if (o.command === 'render') {
     const dir = o.target || o.out, bank = loadBank(dir);
     await renderAll(bank, dir, o.pdf || bank.sourcePath);
     for (const p of checkBank(bank)) console.warn('check:', p);
     return;
   }
-  throw new Error('Usage: npm run quiz -- make <chapters.pdf> --chapters 1-3 | grade [dir] | render [dir]');
+  throw new Error('Usage: npm run quiz -- make <chapters.pdf> --chapters 1-3 | grade [dir] | render [dir] | balance [dir]');
 }
 
 main().catch(err => {
